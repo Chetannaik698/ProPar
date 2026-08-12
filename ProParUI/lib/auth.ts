@@ -5,7 +5,7 @@
  * for the ProPar authentication system.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://propar-backend.onrender.com";
 const LOGGED_IN_KEY = "propar_logged_in";
 
 // ============================================

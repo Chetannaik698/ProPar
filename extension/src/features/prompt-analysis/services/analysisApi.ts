@@ -1,7 +1,7 @@
 import type { AnalysisResponse, ClarificationAnswer } from '../types/analysis';
 import type { PlatformId } from '../../../platform/adapters/types';
 
-const API_URL = 'http://localhost:5000/api/v1/analyze';
+const API_URL = 'https://propar-backend.onrender.com/api/v1/analyze';
 const TIMEOUT_MS = 75_000;
 
 export class AnalysisError extends Error {
