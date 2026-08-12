@@ -1,0 +1,7 @@
+[build]
+  base = "ProParUI"
+  command = "npm run build"
+  publish = "ProParUI/.next"
+
+[build.environment]
+  NEXT_PUBLIC_API_URL = "https://propar-backend.onrender.com"
