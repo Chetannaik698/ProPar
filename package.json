@@ -1,0 +1,16 @@
+{
+  "name": "propar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ProPar — think better before you send.",
+  "packageManager": "pnpm@10.12.4",
+  "scripts": {
+    "build": "pnpm --filter @propar/extension build",
+    "dev": "pnpm --filter @propar/extension dev",
+    "lint": "pnpm --filter @propar/extension lint",
+    "test": "pnpm --filter @propar/extension test",
+    "typecheck": "pnpm --filter @propar/extension typecheck",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  }
+}
+
