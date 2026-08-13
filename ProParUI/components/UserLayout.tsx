@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { LayoutDashboard, User as UserIcon, Settings, ShieldCheck, LogOut, FileText } from "lucide-react";
 import { useAuth } from "@/components/AuthContext";
 import AuthGuard from "@/components/AuthGuard";
+import Logo from "@/components/Logo";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -28,16 +29,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
             <div>
               {/* Logo */}
               <div className="mb-8 px-2">
-                <Link href="/" className="flex items-center gap-2.5">
-                  <img
-                    src="/logo.png"
-                    alt="ProPar Logo"
-                    className="h-8 w-8 object-contain"
-                  />
-                  <span className="font-display text-lg tracking-tight text-[#0B0D12]">
-                    ProPar
-                  </span>
-                </Link>
+                <Logo href="/" size={24} wordmarkClassName="font-display text-lg tracking-tight text-[#0B0D12]" />
               </div>
 
               {/* Navigation */}

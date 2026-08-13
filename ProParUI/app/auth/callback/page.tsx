@@ -9,6 +9,7 @@ import Image from "next/image";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { verifyMagicToken, verifyEmailToken, setToken } from "@/lib/auth";
 import { useAuth } from "@/components/AuthContext";
+import Logo from "@/components/Logo";
 
 type CallbackStatus = "loading" | "success" | "error";
 
@@ -87,19 +88,7 @@ function CallbackContent() {
       >
         {/* Logo */}
         <div className="mb-10 flex justify-center">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image
-              src="/logo.png"
-              alt="ProPar Logo"
-              width={32}
-              height={32}
-              priority
-              className="h-8 w-8 object-contain"
-            />
-            <span className="font-display text-xl tracking-tight text-[#0B0D12]">
-              ProPar
-            </span>
-          </Link>
+          <Logo size={24} wordmarkClassName="font-display text-xl tracking-tight text-[#0B0D12]" />
         </div>
 
         {/* Card */}

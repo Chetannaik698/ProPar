@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
+import Logo from "@/components/Logo";
 
 const NAV_LINKS = [
   { label: "Product", href: "#how-propar-thinks" },
@@ -57,17 +58,7 @@ export default function Navbar() {
               : "border-transparent bg-transparent"
           )}
         >
-          <a href="#top" className="flex items-center gap-2 focus-ring rounded-full px-2 py-1">
-            <Image
-              src="/logo.png"
-              alt="ProPar Logo"
-              width={32}
-              height={32}
-              priority
-              className="h-8 w-8 object-contain"
-            />
-            <span className="font-display text-[18px] tracking-tight text-ink">ProPar</span>
-          </a>
+          <Logo href="#top" size={24} />
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
             {NAV_LINKS.map((link) => (

@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { Mail, ArrowLeft, RefreshCw, Loader2, CheckCircle2 } from "lucide-react";
 import { sendMagicLink } from "@/lib/auth";
+import Logo from "@/components/Logo";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -80,19 +80,7 @@ export default function VerifyPage() {
       >
         {/* Logo */}
         <motion.div variants={itemVariants} className="mb-10 flex justify-center">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image
-              src="/logo.png"
-              alt="ProPar Logo"
-              width={32}
-              height={32}
-              priority
-              className="h-8 w-8 object-contain"
-            />
-            <span className="font-display text-xl tracking-tight text-[#0B0D12]">
-              ProPar
-            </span>
-          </Link>
+          <Logo size={24} wordmarkClassName="font-display text-xl tracking-tight text-[#0B0D12]" />
         </motion.div>
 
         {/* Card */}

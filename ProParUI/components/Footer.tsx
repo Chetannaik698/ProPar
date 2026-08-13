@@ -1,17 +1,30 @@
-import Image from "next/image";
+import Logo from "@/components/Logo";
 
 const COLUMNS = [
   {
     title: "Product",
-    links: ["How it thinks", "Workflow", "Platforms", "Chrome extension"],
+    links: [
+      { label: "Features", href: "#how-propar-thinks" },
+      { label: "Workflow", href: "#workflow" },
+      { label: "Platforms", href: "#platforms" },
+      { label: "Pricing", href: "#pricing" },
+    ],
   },
   {
     title: "Company",
-    links: ["About", "Careers", "Blog", "Contact"],
+    links: [
+      { label: "About", href: "#" },
+      { label: "Privacy", href: "#privacy" },
+      { label: "Terms", href: "#" },
+    ],
   },
   {
-    title: "Resources",
-    links: ["Help center", "Privacy policy", "Terms of service"],
+    title: "Connect",
+    links: [
+      { label: "Twitter / X", href: "#" },
+      { label: "GitHub", href: "#" },
+      { label: "Contact", href: "#" },
+    ],
   },
 ];
 
@@ -21,16 +34,7 @@ export default function Footer() {
       <div className="container-content">
         <div className="grid gap-12 md:grid-cols-[1.2fr_2fr]">
           <div>
-            <a href="#top" className="flex items-center gap-2">
-              <Image
-                src="/logo.png"
-                alt="ProPar Logo"
-                width={32}
-                height={32}
-                className="h-8 w-8 object-contain"
-              />
-              <span className="font-display text-[18px] tracking-tight text-ink">ProPar</span>
-            </a>
+            <Logo href="#top" size={24} />
             <p className="body-copy mt-4 max-w-[32ch] text-[14px]">
               Think before you send. A quiet check on your writing, before it leaves your hands.
             </p>
@@ -44,12 +48,12 @@ export default function Footer() {
                 </p>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
-                    <li key={link}>
+                    <li key={link.label}>
                       <a
-                        href="#"
+                        href={link.href}
                         className="focus-ring rounded text-[14px] text-ink-soft transition-colors hover:text-ink"
                       >
-                        {link}
+                        {link.label}
                       </a>
                     </li>
                   ))}

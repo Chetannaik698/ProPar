@@ -2,19 +2,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+interface LogoProps {
+  showWordmark?: boolean;
+  className?: string;
+  size?: number;
+  wordmarkClassName?: string;
+  href?: string;
+}
+
 export function Logo({
   showWordmark = true,
   className,
   size = 28,
   wordmarkClassName = "font-display text-[18px] tracking-tight text-ink",
   href = "/",
-}: {
-  showWordmark?: boolean;
-  className?: string;
-  size?: number;
-  wordmarkClassName?: string;
-  href?: string;
-}) {
+}: LogoProps) {
   return (
     <Link
       href={href}

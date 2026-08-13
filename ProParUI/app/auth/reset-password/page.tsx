@@ -4,9 +4,9 @@ import { useState, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { Lock, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
 import { resetPasswordWithToken } from "@/lib/auth";
+import Logo from "@/components/Logo";
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -69,19 +69,7 @@ function ResetPasswordContent() {
       >
         {/* Logo */}
         <div className="mb-10 flex justify-center">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image
-              src="/logo.png"
-              alt="ProPar Logo"
-              width={32}
-              height={32}
-              priority
-              className="h-8 w-8 object-contain"
-            />
-            <span className="font-display text-xl tracking-tight text-[#0B0D12]">
-              ProPar
-            </span>
-          </Link>
+          <Logo size={24} wordmarkClassName="font-display text-xl tracking-tight text-[#0B0D12]" />
         </div>
 
         {/* Card */}
