@@ -88,7 +88,7 @@ export default function InteractiveWorkflow() {
             ))}
           </div>
 
-          <div className="relative rounded-[1.5rem] border border-line bg-white p-8 shadow-lift">
+          <div className="relative rounded-[1.5rem] border border-line bg-white p-5 sm:p-8 shadow-lift">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
