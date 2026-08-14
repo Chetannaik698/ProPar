@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { analysisRequestSchema } from '../schemas/analysis.schema.js';
 import { AnalysisService, AnalysisServiceError } from '../services/analysis.service.js';
-import { OpenRouterProvider } from '../providers/openrouter.provider.js';
+import { LangChainProvider } from '../providers/langchain.provider.js';
 import { AppError } from '../middleware/errorHandler.js';
 import type { AnalysisResponse } from '../types/analysis.types.js';
 
-const analysisService = new AnalysisService(new OpenRouterProvider());
+const analysisService = new AnalysisService(new LangChainProvider());
 
 const formatValidationErrors = (errors: readonly { path: (string | number)[]; message: string }[]): string => {
   return errors

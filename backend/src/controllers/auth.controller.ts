@@ -234,9 +234,9 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
 
     const jwt = signToken(user._id.toString(), user.email);
 
-    // Set secure HttpOnly cookie
-    const secureFlag = env.NODE_ENV === 'production' ? 'Secure;' : '';
-    res.setHeader('Set-Cookie', `token=${jwt}; HttpOnly; ${secureFlag} SameSite=Lax; Path=/; Max-Age=${7 * 24 * 60 * 60}`);
+    // Set secure HttpOnly cookie (SameSite=None; Secure for cross-site Netlify/Render deployment)
+    const cookieFlags = env.NODE_ENV === 'production' ? 'Secure; SameSite=None;' : 'SameSite=Lax;';
+    res.setHeader('Set-Cookie', `token=${jwt}; HttpOnly; ${cookieFlags} Path=/; Max-Age=${7 * 24 * 60 * 60}`);
 
     res.json({
       token: jwt,
@@ -619,9 +619,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // Sign JWT
     const jwt = signToken(user._id.toString(), user.email);
 
-    // Set secure HttpOnly cookie
-    const secureFlag = env.NODE_ENV === 'production' ? 'Secure;' : '';
-    res.setHeader('Set-Cookie', `token=${jwt}; HttpOnly; ${secureFlag} SameSite=Lax; Path=/; Max-Age=${7 * 24 * 60 * 60}`);
+    // Set secure HttpOnly cookie (SameSite=None; Secure for cross-site Netlify/Render deployment)
+    const cookieFlags = env.NODE_ENV === 'production' ? 'Secure; SameSite=None;' : 'SameSite=Lax;';
+    res.setHeader('Set-Cookie', `token=${jwt}; HttpOnly; ${cookieFlags} Path=/; Max-Age=${7 * 24 * 60 * 60}`);
 
     res.json({
       token: jwt,

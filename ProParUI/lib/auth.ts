@@ -134,7 +134,11 @@ export const loginUser = async (email: string, password: string): Promise<AuthRe
   }
 
   const responseData: AuthResponse = await res.json();
-  setLoggedIn(true);
+  if (responseData.token) {
+    setToken(responseData.token);
+  } else {
+    setLoggedIn(true);
+  }
   return responseData;
 };
 
@@ -254,7 +258,11 @@ export const googleLogin = async (idToken: string): Promise<AuthResponse> => {
   }
 
   const responseData: AuthResponse = await res.json();
-  setLoggedIn(true);
+  if (responseData.token) {
+    setToken(responseData.token);
+  } else {
+    setLoggedIn(true);
+  }
   return responseData;
 };
 
@@ -275,7 +283,11 @@ export const appleLogin = async (idToken: string, user?: unknown): Promise<AuthR
   }
 
   const responseData: AuthResponse = await res.json();
-  setLoggedIn(true);
+  if (responseData.token) {
+    setToken(responseData.token);
+  } else {
+    setLoggedIn(true);
+  }
   return responseData;
 };
 
@@ -296,7 +308,11 @@ export const microsoftLogin = async (accessToken: string): Promise<AuthResponse>
   }
 
   const responseData: AuthResponse = await res.json();
-  setLoggedIn(true);
+  if (responseData.token) {
+    setToken(responseData.token);
+  } else {
+    setLoggedIn(true);
+  }
   return responseData;
 };
 
@@ -307,8 +323,15 @@ export const fetchCurrentUser = async (): Promise<AuthUser | null> => {
   if (!isAuthenticated()) return null;
 
   try {
+    const token = getToken();
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch(`${API_BASE}/api/v1/auth/me`, {
       method: "GET",
+      headers,
       credentials: "include",
     });
 
