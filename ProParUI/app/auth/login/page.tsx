@@ -312,7 +312,7 @@ export default function LoginPage() {
         {/* Card */}
         <motion.div
           variants={itemVariants}
-          className="rounded-2xl border border-[#E7E9EC] bg-white px-8 py-10 shadow-[0_1px_2px_rgba(11,13,18,0.04),0_12px_40px_-8px_rgba(11,13,18,0.10)]"
+          className="rounded-2xl border border-[#E7E9EC] bg-white px-5 py-7 sm:px-8 sm:py-10 shadow-[0_1px_2px_rgba(11,13,18,0.04),0_12px_40px_-8px_rgba(11,13,18,0.10)]"
         >
           {/* Dynamic Headers */}
           <h1 className="mb-1 text-center font-display text-[28px] leading-tight tracking-[-0.01em] text-[#0B0D12]">

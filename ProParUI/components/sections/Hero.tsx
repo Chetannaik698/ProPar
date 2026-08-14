@@ -146,7 +146,7 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={fadeUp} className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="relative inline-block">
+            <div className="relative inline-block w-full sm:w-auto">
               {user && !isAdded && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -177,7 +177,7 @@ export default function Hero() {
               )}
               {user && isAdded ? (
                 <div
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-green-500 px-6 py-3.5 text-[15px] font-semibold text-white shadow-soft transition-all duration-300"
+                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-green-500 px-6 py-3.5 text-[15px] font-semibold text-white shadow-soft transition-all duration-300"
                 >
                   <CircleCheck size={18} className="stroke-[2.5]" />
                   ProPar is added
@@ -186,7 +186,7 @@ export default function Hero() {
                 <a
                   href="/auth/login"
                   onClick={handleAddClick}
-                  className="focus-ring group inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-white shadow-soft transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="focus-ring group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-white shadow-soft transition-transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                   <Chrome size={17} className="opacity-90" />
                   Add to Chrome
@@ -195,7 +195,7 @@ export default function Hero() {
             </div>
             <a
               href="#workflow"
-              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full border border-line px-6 py-3.5 text-[15px] font-medium text-ink transition-colors hover:bg-mist"
+              className="focus-ring inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-line px-6 py-3.5 text-[15px] font-medium text-ink transition-colors hover:bg-mist"
             >
               <PlayCircle size={17} />
               Watch demo
@@ -216,17 +216,17 @@ export default function Hero() {
         >
           <div className="absolute -inset-x-6 -inset-y-10 -z-10 rounded-[2.5rem] bg-gradient-to-b from-accent-soft/70 to-transparent blur-2xl" />
 
-          <div className="rounded-2xl border border-line bg-white shadow-lift">
+          <div className="rounded-2xl border border-line bg-white shadow-lift overflow-hidden">
             <div className="flex items-center gap-1.5 border-b border-line px-4 py-3">
               <span className="h-2.5 w-2.5 rounded-full bg-[#E5484D]/70" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#F5A623]/70" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#30A46C]/70" />
-              <span className="ml-3 rounded-full bg-mist px-3 py-1 text-[12px] text-ink-faint">
+              <span className="ml-3 rounded-full bg-mist px-3 py-1 text-[12px] text-ink-faint truncate max-w-[180px] sm:max-w-none">
                 mail.google.com
               </span>
             </div>
 
-            <div className="min-h-[340px] p-6">
+            <div className="min-h-[320px] p-4 sm:p-6">
               <AnimatePresence mode="wait">
                 {stage !== "final" ? (
                   <motion.div

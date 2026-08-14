@@ -68,7 +68,7 @@ export default function ProductPreview() {
           variants={fadeUp}
           className="rounded-[1.5rem] border border-line bg-white shadow-lift"
         >
-          <div className="flex items-center gap-1 overflow-x-auto border-b border-line px-3 py-2.5">
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar border-b border-line px-3 py-2.5">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -84,7 +84,7 @@ export default function ProductPreview() {
             ))}
           </div>
 
-          <div className="min-h-[320px] p-6 md:p-10">
+          <div className="min-h-[320px] p-4 sm:p-6 md:p-10">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}

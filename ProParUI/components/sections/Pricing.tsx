@@ -29,7 +29,7 @@ export default function Pricing() {
           whileInView="visible"
           viewport={viewportOnce}
           variants={fadeUp}
-          className="mx-auto max-w-lg rounded-[1.75rem] border border-line bg-white p-10 text-center shadow-card"
+          className="mx-auto max-w-lg rounded-[1.75rem] border border-line bg-white p-5 sm:p-8 md:p-10 text-center shadow-card"
         >
           <p className="eyebrow mb-4">Pricing</p>
           <h2 className="font-display text-[28px] italic text-ink">Team plans, coming soon.</h2>
@@ -67,7 +67,7 @@ export default function Pricing() {
               />
               <button
                 type="submit"
-                className="focus-ring shrink-0 rounded-full bg-ink px-6 py-3 text-[14px] font-medium text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                className="focus-ring w-full sm:w-auto shrink-0 rounded-full bg-ink px-6 py-3 text-[14px] font-medium text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 Join waitlist
               </button>
