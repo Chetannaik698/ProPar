@@ -17,7 +17,7 @@ export function AnalysisShell({ isDark = false, onClose, children, platform }: A
     <aside className="analysis-shell" aria-label={`ProPar ${platform.platformName} ${title}`} role="dialog">
       <header className="analysis-shell-header">
         <div className="analysis-shell-title-group">
-          <ProParMark size={20} isDark={isDark} />
+          <ProParMark className="h-6 w-6 shrink-0" isDark={isDark} />
           <div>
             <p className="analysis-shell-eyebrow">{eyebrow}</p>
             <h1 className="analysis-shell-title">{title}</h1>
