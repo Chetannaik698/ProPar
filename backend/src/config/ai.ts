@@ -1,6 +1,22 @@
 import { env } from './env.js';
 
 export const aiConfig = {
+  primaryProvider: env.PRIMARY_AI_PROVIDER,
+  fallbackProvider: env.FALLBACK_AI_PROVIDER,
+  gemini: {
+    providerName: 'gemini',
+    apiKey: env.GEMINI_API_KEY,
+    model: env.GEMINI_MODEL,
+    timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+    maxCompletionTokens: env.AI_MAX_COMPLETION_TOKENS,
+  },
+  groq: {
+    providerName: 'groq',
+    apiKey: env.GROQ_API_KEY,
+    model: env.GROQ_MODEL,
+    timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+    maxCompletionTokens: env.AI_MAX_COMPLETION_TOKENS,
+  },
   openRouter: {
     providerName: 'openrouter',
     apiKey: env.OPENROUTER_API_KEY,
