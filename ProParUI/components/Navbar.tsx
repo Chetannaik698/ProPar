@@ -10,7 +10,7 @@ import { useAuth } from "@/components/AuthContext";
 import Logo from "@/components/Logo";
 
 const NAV_LINKS = [
-  { label: "Product", href: "#how-propar-thinks" },
+  { label: "Product", href: "#how-propaar-thinks" },
   { label: "Workflow", href: "#workflow" },
   { label: "Platforms", href: "#platforms" },
   { label: "Privacy", href: "#privacy" },

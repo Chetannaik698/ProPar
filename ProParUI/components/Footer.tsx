@@ -4,7 +4,7 @@ const COLUMNS = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "#how-propar-thinks" },
+      { label: "Features", href: "#how-propaar-thinks" },
       { label: "Workflow", href: "#workflow" },
       { label: "Platforms", href: "#platforms" },
       { label: "Pricing", href: "#pricing" },

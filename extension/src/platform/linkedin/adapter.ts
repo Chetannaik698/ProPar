@@ -300,7 +300,7 @@ export class LinkedInAdapter implements ActivePlatformAdapter {
         attributeFilter: ['aria-hidden', 'class', 'hidden', 'style'],
       });
     } catch (err) {
-      console.error('[ProPar][LinkedIn] Observer failed to initialize', err);
+      console.error('[ProPaar][LinkedIn] Observer failed to initialize', err);
     }
 
     handleDOMMutation();

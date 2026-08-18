@@ -70,7 +70,7 @@ const FEATURES = [
 
 export default function HowProPaarThinks() {
   return (
-    <section id="how-propar-thinks" className="py-24 md:py-32">
+    <section id="how-propaar-thinks" className="py-24 md:py-32">
       <div className="container-content">
         <motion.div
           initial="hidden"

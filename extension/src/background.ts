@@ -47,11 +47,11 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse: (
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-  console.debug('[ProPar] Message sent to background', {
+  console.debug('[ProPaar] Message sent to background', {
     platform: message.platform,
     promptLength: message.prompt.length,
   });
-  console.debug('[ProPar] Backend request started', {
+  console.debug('[ProPaar] Backend request started', {
     platform: message.platform,
     promptLength: message.prompt.length,
   });
@@ -68,8 +68,8 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse: (
   })
     .then(async (response) => {
       if (!response.ok) {
-        console.error('[ProPar] Backend request failed', { status: response.status, statusText: response.statusText });
-        sendResponse({ ok: false, code: 'network', error: 'Unable to connect to ProPar Backend.' });
+        console.error('[ProPaar] Backend request failed', { status: response.status, statusText: response.statusText });
+        sendResponse({ ok: false, code: 'network', error: 'Unable to connect to ProPaar Backend.' });
         return;
       }
 
@@ -77,29 +77,29 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse: (
       try {
         json = await response.json();
       } catch {
-        console.error('[ProPar] Backend response JSON parsing failed');
+        console.error('[ProPaar] Backend response JSON parsing failed');
         sendResponse({ ok: false, code: 'invalid', error: 'Unexpected server response.' });
         return;
       }
 
       if (!hasAnalysisPayload(json)) {
-        console.error('[ProPar] Backend response missing analysis payload', json);
+        console.error('[ProPaar] Backend response missing analysis payload', json);
         sendResponse({ ok: false, code: 'invalid', error: 'Unexpected server response.' });
         return;
       }
 
-      console.debug('[ProPar] Backend response received', { platform: message.platform });
+      console.debug('[ProPaar] Backend response received', { platform: message.platform });
       sendResponse({ ok: true, data: json });
     })
     .catch((error: unknown) => {
       if (error instanceof DOMException && error.name === 'AbortError') {
-        console.error('[ProPar] Backend request timed out');
+        console.error('[ProPaar] Backend request timed out');
         sendResponse({ ok: false, code: 'timeout', error: 'Analysis timed out. Please try again.' });
         return;
       }
 
-      console.error('[ProPar] Backend request failed before response', error);
-      sendResponse({ ok: false, code: 'network', error: 'Unable to connect to ProPar Backend.' });
+      console.error('[ProPaar] Backend request failed before response', error);
+      sendResponse({ ok: false, code: 'network', error: 'Unable to connect to ProPaar Backend.' });
     })
     .finally(() => clearTimeout(timeout));
 

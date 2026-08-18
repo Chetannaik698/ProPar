@@ -2,7 +2,7 @@
  * Client-side authentication utilities
  *
  * Handles session state, cookie-based authentication, and API calls
- * for the ProPar authentication system.
+ * for the ProPaar authentication system.
  */
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://propar-backend.onrender.com";

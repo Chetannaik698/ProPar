@@ -120,7 +120,7 @@ export function ProParExtension() {
         const activePlatform = getActivePlatformAdapter();
         setPlatform(activePlatform);
         const promptLength = activePlatform.readComposer().length;
-        console.debug('[ProPar] Review icon clicked', { platform: activePlatform.id, promptLength });
+        console.debug('[ProPaar] Review icon clicked', { platform: activePlatform.id, promptLength });
         const promptExists = promptLength > 0;
         setAutoAnalyze(promptExists);
         return;

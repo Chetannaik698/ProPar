@@ -114,7 +114,7 @@ export class ComposerTracker {
 
   private startObserving(): void {
     this.mutationObserver = new MutationObserver(() => {
-      console.debug('[ProPar][Anchor] Mutation detected');
+      console.debug('[ProPaar][Anchor] Mutation detected');
       this.scheduleSync();
     });
     this.mutationObserver.observe(document.body, { attributes: true, characterData: true, childList: true, subtree: true });
