@@ -1,5 +1,5 @@
 import { isProduction } from '../config/env.js';
-import { PROPAR_SYSTEM_PROMPT } from '../prompts/propar.system.js';
+import { PROPAR_SYSTEM_PROMPT } from '../prompts/propaar.system.js';
 import { aiAnalysisSchema, type AiAnalysis } from '../schemas/ai-response.schema.js';
 import { AiProviderError, type AiProvider, type AiUsage } from '../providers/ai-provider.types.js';
 import type { ClarificationAnswer, PlatformId, PromptAnalysis } from '../types/analysis.types.js';

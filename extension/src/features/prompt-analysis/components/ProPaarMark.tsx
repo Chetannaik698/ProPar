@@ -1,11 +1,11 @@
 import logoAsset from '../../../Assets/logo.png';
 
-interface ProParMarkProps {
+interface ProPaarMarkProps {
   className?: string;
   isDark?: boolean;
 }
 
-export function ProParMark({ className = '', isDark = false }: ProParMarkProps) {
+export function ProPaarMark({ className = '', isDark = false }: ProPaarMarkProps) {
   const logoFileName = isDark ? 'logo-white.png' : 'logo.png';
   const logoUrl =
     typeof chrome !== 'undefined' && chrome.runtime?.getURL

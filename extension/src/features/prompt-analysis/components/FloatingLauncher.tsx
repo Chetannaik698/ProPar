@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useChatGptTheme } from '../../../shared/hooks/useChatGptTheme';
-import { ProParMark } from './ProParMark';
+import { ProPaarMark } from './ProPaarMark';
 
 interface FloatingLauncherProps {
   isOpen: boolean;
@@ -26,7 +26,7 @@ export const FloatingLauncher = forwardRef<HTMLButtonElement, FloatingLauncherPr
         type="button"
         whileTap={reduceMotion ? undefined : { scale: 0.95 }}
       >
-        <ProParMark className="h-[18px] w-[18px]" isDark={isDark} />
+        <ProPaarMark className="h-[18px] w-[18px]" isDark={isDark} />
       </motion.button>
     );
   },

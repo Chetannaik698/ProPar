@@ -1,4 +1,4 @@
-import { ProParMark } from './ProParMark';
+import { ProPaarMark } from './ProPaarMark';
 import type { ReactNode } from 'react';
 import type { ActivePlatformAdapter } from '../../../platform/adapters/types';
 
@@ -17,7 +17,7 @@ export function AnalysisShell({ isDark = false, onClose, children, platform }: A
     <aside className="analysis-shell" aria-label={`ProPaar ${platform.platformName} ${title}`} role="dialog">
       <header className="analysis-shell-header">
         <div className="analysis-shell-title-group">
-          <ProParMark className="h-6 w-6 shrink-0" isDark={isDark} />
+          <ProPaarMark className="h-6 w-6 shrink-0" isDark={isDark} />
           <div>
             <p className="analysis-shell-eyebrow">{eyebrow}</p>
             <h1 className="analysis-shell-title">{title}</h1>

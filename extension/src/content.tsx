@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ProParExtension } from './app/ProParExtension';
+import { ProPaarExtension } from './app/ProPaarExtension';
 import styles from './styles/index.css?inline';
 
 function mount(): void {
@@ -153,7 +153,7 @@ function mount(): void {
 
   createRoot(root).render(
     <StrictMode>
-      <ProParExtension />
+      <ProPaarExtension />
     </StrictMode>,
   );
 }

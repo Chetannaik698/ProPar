@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ProParIcon } from '../features/overlay/components/ProParIcon';
-import { ProParPopup } from '../features/overlay/components/ProParPopup';
+import { ProPaarIcon } from '../features/overlay/components/ProPaarIcon';
+import { ProPaarPopup } from '../features/overlay/components/ProPaarPopup';
 import { OverlayManager, type PopupPosition } from '../platform/overlay/OverlayManager';
 import { getActivePlatformAdapter } from '../platform/adapters/registry';
 import type { ActivePlatformAdapter } from '../platform/adapters/types';
@@ -30,7 +30,7 @@ function isSamePopupPosition(first: PopupPosition | null, second: PopupPosition 
   );
 }
 
-export function ProParExtension() {
+export function ProPaarExtension() {
   const overlay = useRef(new OverlayManager());
   const popupHeightRef = useRef(0);
   const [isMounted, setIsMounted] = useState(false);
@@ -144,7 +144,7 @@ export function ProParExtension() {
   return (
     <>
       {createPortal(
-        <ProParIcon
+        <ProPaarIcon
           isDark={isDark}
           isVisible
           onClick={handleIconClick}
@@ -152,7 +152,7 @@ export function ProParExtension() {
         />,
         portalElement,
       )}
-      <ProParPopup
+      <ProPaarPopup
         isOpen={isPopupOpen}
         isDark={!isDark}
         onClose={handleClosePopup}

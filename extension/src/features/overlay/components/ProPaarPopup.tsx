@@ -4,7 +4,7 @@ import { AnalysisCard } from '../../prompt-analysis/components/AnalysisCard';
 import type { ActivePlatformAdapter } from '../../../platform/adapters/types';
 import type { PopupPosition } from '../../../platform/overlay/OverlayManager';
 
-interface ProParPopupProps {
+interface ProPaarPopupProps {
   isDark?: boolean;
   isOpen: boolean;
   onClose: () => void;
@@ -14,7 +14,7 @@ interface ProParPopupProps {
   platform: ActivePlatformAdapter;
 }
 
-export function ProParPopup({ isDark = false, isOpen, onClose, position, autoAnalyze = false, onMeasure, platform }: ProParPopupProps) {
+export function ProPaarPopup({ isDark = false, isOpen, onClose, position, autoAnalyze = false, onMeasure, platform }: ProPaarPopupProps) {
   const reduceMotion = useReducedMotion();
   const elRef = useRef<HTMLDivElement | null>(null);
   const lastMeasuredHeightRef = useRef(0);

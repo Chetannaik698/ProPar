@@ -1,14 +1,14 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { ProParMark } from '../../prompt-analysis/components/ProParMark';
+import { ProPaarMark } from '../../prompt-analysis/components/ProPaarMark';
 
-interface ProParIconProps {
+interface ProPaarIconProps {
   isVisible: boolean;
   isDark?: boolean;
   onClick: () => void;
   position: { top: number; left: number } | null;
 }
 
-export function ProParIcon({ isVisible, isDark = false, onClick, position }: ProParIconProps) {
+export function ProPaarIcon({ isVisible, isDark = false, onClick, position }: ProPaarIconProps) {
   const reduceMotion = useReducedMotion();
 
   if (!position || !isVisible) return null;
@@ -43,7 +43,7 @@ export function ProParIcon({ isVisible, isDark = false, onClick, position }: Pro
       whileHover={reduceMotion ? undefined : { scale: 1 }}
       whileTap={reduceMotion ? undefined : { scale: 0.95 }}
     >
-      <ProParMark className="h-[18px] w-[18px]" isDark={isDark} />
+      <ProPaarMark className="h-[18px] w-[18px]" isDark={isDark} />
     </motion.button>
   );
 }
