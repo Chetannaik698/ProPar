@@ -165,6 +165,92 @@
   display: grid;
   gap: 16px;
   min-height: 420px;
+  scroll-behavior: smooth !important;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+/* Custom Scrollbars for ProPaar extension */
+.analysis-shell-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.analysis-shell-body::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.analysis-shell-body::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+.analysis-shell-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+[data-theme="dark"] .analysis-shell-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .analysis-shell-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.prompt-box::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.prompt-box::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.prompt-box::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+
+.prompt-box::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Smooth card transitions & hover elevation */
+.result-card,
+.panel-card,
+.card-panel,
+.clarify-card,
+.suggestion-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.result-card:hover,
+.panel-card:hover,
+.clarify-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="dark"] .result-card:hover,
+[data-theme="dark"] .panel-card:hover,
+[data-theme="dark"] .clarify-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Button micro-animations */
+.primary-action,
+.secondary-action,
+.clarify-option,
+.icon-button {
+  transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.primary-action:active,
+.secondary-action:active,
+.clarify-option:active {
+  transform: scale(0.97) !important;
 }
 
 .panel-card,

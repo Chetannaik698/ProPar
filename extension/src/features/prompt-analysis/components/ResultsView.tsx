@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { Analysis } from '../types/analysis';
 import {
   BlindSpotsCard,
@@ -154,166 +155,182 @@ export function ResultsView({ analysis, onClose, platform, isOriginalPromptEmpty
         </button>
       </div>
 
-      {activeTab === 'output' ? (
-        <div className="tab-pane">
-          <WhatChangedCard items={analysis.whatChanged} labels={platform.labels} />
+      <AnimatePresence mode="wait">
+        {activeTab === 'output' ? (
+          <motion.div
+            key="output-tab"
+            animate={{ opacity: 1, y: 0 }}
+            className="tab-pane"
+            exit={{ opacity: 0, y: -6 }}
+            initial={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+          >
+            <WhatChangedCard items={analysis.whatChanged} labels={platform.labels} />
 
-          {isGmail ? (
-            <section className="result-card improved-prompt-card">
+            {isGmail ? (
+              <section className="result-card improved-prompt-card">
+                <div>
+                  <p className="card-label">{platform.labels.finalCardLabel}</p>
+                  <p className="card-caption">{platform.labels.finalCardCaption}</p>
+                </div>
+
+                <div className="prompt-box">
+                  {isEditing ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                      <div>
+                        <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Subject</label>
+                        <input
+                          onChange={(e) => setSubject(e.target.value)}
+                          style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit' }}
+                          type="text"
+                          value={subject}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Greeting</label>
+                        <input
+                          onChange={(e) => setGreeting(e.target.value)}
+                          style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit' }}
+                          type="text"
+                          value={greeting}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Body</label>
+                        <textarea
+                          onChange={(e) => setBody(e.target.value)}
+                          rows={6}
+                          style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit', fontFamily: 'inherit' }}
+                          value={body}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Closing</label>
+                        <input
+                          onChange={(e) => setClosing(e.target.value)}
+                          style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit' }}
+                          type="text"
+                          value={closing}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Signature</label>
+                        <input
+                          onChange={(e) => setSignature(e.target.value)}
+                          style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit' }}
+                          type="text"
+                          value={signature}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {subject && <p><strong>Subject:</strong> {subject}</p>}
+                      {greeting && <p style={{ margin: 0 }}>{greeting}</p>}
+                      {body && <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{body}</p>}
+                      {closing && <p style={{ margin: 0 }}>{closing}</p>}
+                      {signature && <p style={{ margin: 0 }}><em>{signature}</em></p>}
+                    </div>
+                  )}
+                </div>
+
+                <div className="prompt-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
+                  <button
+                    className={copyState === 'copied' ? 'secondary-action action-success' : 'secondary-action'}
+                    onClick={() => { void handleCopy(); }}
+                    style={{ flex: '1 1 auto' }}
+                    type="button"
+                  >
+                    {copyState === 'copied' ? <CheckCircle2 size={15} /> : <Clipboard size={15} />}
+                    {copyState === 'copied' ? 'Copied!' : 'Copy'}
+                  </button>
+
+                  {showMode1EmailUI && (
+                    <button
+                      className="secondary-action"
+                      onClick={() => setIsEditing(!isEditing)}
+                      style={{ flex: '1 1 auto' }}
+                      type="button"
+                    >
+                      <Check size={15} />
+                      {isEditing ? 'Save' : 'Edit'}
+                    </button>
+                  )}
+
+                  {onRegenerate && (
+                    <button
+                      className="secondary-action"
+                      onClick={onRegenerate}
+                      style={{ flex: '1 1 auto' }}
+                      type="button"
+                    >
+                      <RotateCw size={15} />
+                      Regenerate
+                    </button>
+                  )}
+
+                  <button
+                    className={replaceState !== 'idle' ? 'primary-action action-success' : 'primary-action'}
+                    onClick={handleReplace}
+                    style={{ flex: '2 1 100%' }}
+                    type="button"
+                  >
+                    {replaceState !== 'idle' ? <CheckCircle2 size={15} /> : <FilePenLine size={15} />}
+                    {replaceState !== 'idle' ? platform.labels.replacedAction : (showMode1EmailUI ? 'Insert into Gmail' : 'Replace Draft')}
+                  </button>
+                </div>
+
+                {replaceState === 'success' ? <SuccessToast message={platform.labels.successToast} /> : null}
+              </section>
+            ) : (
+              <ImprovedPromptCard
+                copyState={copyState}
+                formattedPrompt={formattedPrompt}
+                labels={platform.labels}
+                onCopy={handleCopy}
+                onReplace={handleReplace}
+                replaceState={replaceState}
+              />
+            )}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="insights-tab"
+            animate={{ opacity: 1, y: 0 }}
+            className="tab-pane"
+            exit={{ opacity: 0, y: -6 }}
+            initial={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+          >
+            {isGmail && (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                <ThinkingScoreCard score={analysis.thinkingScore} />
+                <MetricCard value={analysis.estimatedImprovement} />
+              </div>
+            )}
+
+            <GoalDiscoveryCard fallbackIntent={analysis.intent} goalDiscovery={analysis.goalDiscovery} labels={platform.labels} />
+            <ThinkingCard hiddenAssumptions={analysis.hiddenAssumptions} labels={platform.labels} thinkingGap={analysis.thinkingGap} />
+            <ExpertConsiderationsCard items={analysis.expertConsiderations} labels={platform.labels} />
+            <BlindSpotsCard items={analysis.blindSpots} labels={platform.labels} />
+            <MissingContextCard items={analysis.missingContext ?? []} labels={platform.labels} />
+
+            <section className="result-card collection-card">
               <div>
-                <p className="card-label">{platform.labels.finalCardLabel}</p>
-                <p className="card-caption">{platform.labels.finalCardCaption}</p>
+                <p className="card-label">{platform.labels.recommendationsTitle || 'Recommended Improvements'}</p>
+                <p className="card-caption">{platform.labels.recommendationsCaption}</p>
               </div>
-
-              <div className="prompt-box">
-                {isEditing ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-                    <div>
-                      <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Subject</label>
-                      <input
-                        type="text"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Greeting</label>
-                      <input
-                        type="text"
-                        value={greeting}
-                        onChange={(e) => setGreeting(e.target.value)}
-                        style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Body</label>
-                      <textarea
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
-                        rows={6}
-                        style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit', fontFamily: 'inherit' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Closing</label>
-                      <input
-                        type="text"
-                        value={closing}
-                        onChange={(e) => setClosing(e.target.value)}
-                        style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', display: 'block', marginBottom: '4px' }}>Signature</label>
-                      <input
-                        type="text"
-                        value={signature}
-                        onChange={(e) => setSignature(e.target.value)}
-                        style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid rgba(15, 23, 42, 0.12)', background: 'transparent', color: 'inherit' }}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {subject && <p><strong>Subject:</strong> {subject}</p>}
-                    {greeting && <p style={{ margin: 0 }}>{greeting}</p>}
-                    {body && <p style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{body}</p>}
-                    {closing && <p style={{ margin: 0 }}>{closing}</p>}
-                    {signature && <p style={{ margin: 0 }}><em>{signature}</em></p>}
-                  </div>
-                )}
+              <div className="collection-list">
+                {(analysis.suggestions ?? []).map((suggestion, index) => {
+                  const key = typeof suggestion === 'string' ? suggestion : suggestion.recommendation;
+                  return <SuggestionCard key={`${key}-${index}`} suggestion={suggestion} />;
+                })}
+                {!analysis.suggestions?.length && <p className="collection-empty">No additional suggestions.</p>}
               </div>
-
-              <div className="prompt-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
-                <button
-                  className={copyState === 'copied' ? 'secondary-action action-success' : 'secondary-action'}
-                  onClick={() => { void handleCopy(); }}
-                  type="button"
-                  style={{ flex: '1 1 auto' }}
-                >
-                  {copyState === 'copied' ? <CheckCircle2 size={15} /> : <Clipboard size={15} />}
-                  {copyState === 'copied' ? 'Copied!' : 'Copy'}
-                </button>
-
-                {showMode1EmailUI && (
-                  <button
-                    className="secondary-action"
-                    onClick={() => setIsEditing(!isEditing)}
-                    type="button"
-                    style={{ flex: '1 1 auto' }}
-                  >
-                    <Check size={15} />
-                    {isEditing ? 'Save' : 'Edit'}
-                  </button>
-                )}
-
-                {onRegenerate && (
-                  <button
-                    className="secondary-action"
-                    onClick={onRegenerate}
-                    type="button"
-                    style={{ flex: '1 1 auto' }}
-                  >
-                    <RotateCw size={15} />
-                    Regenerate
-                  </button>
-                )}
-
-                <button
-                  className={replaceState !== 'idle' ? 'primary-action action-success' : 'primary-action'}
-                  onClick={handleReplace}
-                  type="button"
-                  style={{ flex: '2 1 100%' }}
-                >
-                  {replaceState !== 'idle' ? <CheckCircle2 size={15} /> : <FilePenLine size={15} />}
-                  {replaceState !== 'idle' ? platform.labels.replacedAction : (showMode1EmailUI ? 'Insert into Gmail' : 'Replace Draft')}
-                </button>
-              </div>
-
-              {replaceState === 'success' ? <SuccessToast message={platform.labels.successToast} /> : null}
             </section>
-          ) : (
-            <ImprovedPromptCard
-              copyState={copyState}
-              formattedPrompt={formattedPrompt}
-              labels={platform.labels}
-              onCopy={handleCopy}
-              onReplace={handleReplace}
-              replaceState={replaceState}
-            />
-          )}
-        </div>
-      ) : (
-        <div className="tab-pane">
-          {isGmail && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
-              <ThinkingScoreCard score={analysis.thinkingScore} />
-              <MetricCard value={analysis.estimatedImprovement} />
-            </div>
-          )}
-
-          <GoalDiscoveryCard fallbackIntent={analysis.intent} goalDiscovery={analysis.goalDiscovery} labels={platform.labels} />
-          <ThinkingCard hiddenAssumptions={analysis.hiddenAssumptions} labels={platform.labels} thinkingGap={analysis.thinkingGap} />
-          <ExpertConsiderationsCard items={analysis.expertConsiderations} labels={platform.labels} />
-          <BlindSpotsCard items={analysis.blindSpots} labels={platform.labels} />
-          <MissingContextCard items={analysis.missingContext ?? []} labels={platform.labels} />
-
-          <section className="result-card collection-card">
-            <div>
-              <p className="card-label">{platform.labels.recommendationsTitle || 'Recommended Improvements'}</p>
-              <p className="card-caption">{platform.labels.recommendationsCaption}</p>
-            </div>
-            <div className="collection-list">
-              {(analysis.suggestions ?? []).map((suggestion, index) => {
-                const key = typeof suggestion === 'string' ? suggestion : suggestion.recommendation;
-                return <SuggestionCard key={`${key}-${index}`} suggestion={suggestion} />;
-              })}
-              {!analysis.suggestions?.length && <p className="collection-empty">No additional suggestions.</p>}
-            </div>
-          </section>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
