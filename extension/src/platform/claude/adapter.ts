@@ -7,11 +7,14 @@ const CLAUDE_COMPOSER_SELECTORS = [
 ] as const;
 
 const SEND_BUTTON_SELECTORS = [
+  'button[aria-label*="Send" i]',
+  'button[aria-label*="send" i]',
+  'button[aria-label*="Submit" i]',
+  'button[data-testid*="send" i]',
+  'button[type="submit"]',
   '[aria-label*="Send message" i]',
   '[aria-label*="Send prompt" i]',
   '[aria-label*="Send" i]',
-  '[data-testid*="send" i]',
-  'button[aria-label*="send" i]',
 ] as const;
 
 function queryComposerCandidates(): HTMLElement[] {
@@ -31,7 +34,9 @@ function pickBottomRightButton(buttons: HTMLElement[]): HTMLElement | null {
     .filter(isVisibleElement)
     .filter((button) => {
       const label = (button.getAttribute('aria-label') || button.getAttribute('title') || '').toLowerCase();
-      return !label.includes('mic') && !label.includes('voice') && !label.includes('audio') && !label.includes('speech') && !label.includes('dictat');
+      const text = (button.textContent || '').toLowerCase();
+      const isMic = label.includes('mic') || label.includes('voice') || label.includes('audio') || label.includes('speech') || label.includes('dictat') || text.includes('voice');
+      return !isMic;
     })
     .map((button) => ({ button, rect: button.getBoundingClientRect() }))
     .sort((a, b) => b.rect.top - a.rect.top || b.rect.left - a.rect.left)[0]?.button ?? null;

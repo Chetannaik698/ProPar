@@ -342,6 +342,7 @@ export class AnchorPositionManager {
 
     if (this.anchor && this.container && this.hostElement) {
       const adapter = getActivePlatformAdapter();
+
       if (adapter.id === 'chatgpt' || adapter.id === 'gemini' || adapter.id === 'claude' || adapter.id === 'linkedin') {
         // Relative inline-flex layout for ChatGPT, Gemini, Claude, and LinkedIn to sit naturally in flow
         if (this.hostElement.style.position !== 'relative') {
@@ -354,13 +355,30 @@ export class AnchorPositionManager {
           this.hostElement.style.left = '';
         }
 
-        const marginX = adapter.id === 'gemini' || adapter.id === 'claude' ? '6px' : '8px';
+        const marginX = adapter.id === 'gemini' ? '6px' : '8px';
         if (this.hostElement.style.marginLeft !== marginX) {
           this.hostElement.style.marginLeft = marginX;
         }
         if (this.hostElement.style.marginRight !== marginX) {
           this.hostElement.style.marginRight = marginX;
         }
+      }
+
+      // Only show host element when prompt text is non-empty
+      const composerText = adapter.readComposer().trim();
+      const hasText = composerText.length > 0;
+      if (!hasText) {
+        if (this.hostElement.style.display !== 'none') {
+          this.hostElement.style.display = 'none';
+        }
+        return;
+      } else {
+        if (this.hostElement.style.display !== 'inline-flex') {
+          this.hostElement.style.display = 'inline-flex';
+        }
+      }
+
+      if (adapter.id === 'chatgpt' || adapter.id === 'gemini' || adapter.id === 'claude' || adapter.id === 'linkedin') {
         return;
       }
     }
