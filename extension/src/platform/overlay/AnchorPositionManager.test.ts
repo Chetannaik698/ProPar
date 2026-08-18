@@ -66,7 +66,7 @@ describe('AnchorPositionManager', () => {
     cleanup();
   });
 
-  it('uses absolute positioning with 12px horizontal offset spacing for the Gemini platform', () => {
+  it('positions host container in flow before send button for Gemini with proper spacing', () => {
     const originalLocation = window.location;
     // Mock the location to match Gemini domain
     const mockLocation = new URL('https://gemini.google.com/app');
@@ -79,25 +79,40 @@ describe('AnchorPositionManager', () => {
     const composer = document.createElement('div');
     composer.style.position = 'relative';
     
-    const toolbar = document.createElement('div');
-    toolbar.style.position = 'absolute';
-    toolbar.style.width = '40px';
-    toolbar.style.height = '40px';
-    composer.appendChild(toolbar);
+    const actionRow = document.createElement('div');
+    actionRow.style.display = 'flex';
+    actionRow.style.alignItems = 'center';
+
+    const micButton = document.createElement('button');
+    micButton.setAttribute('aria-label', 'Microphone');
+    micButton.style.width = '40px';
+    micButton.style.height = '40px';
+
+    const sendButton = document.createElement('button');
+    sendButton.setAttribute('aria-label', 'Send message');
+    sendButton.style.width = '40px';
+    sendButton.style.height = '40px';
+
+    actionRow.append(micButton, sendButton);
+    composer.appendChild(actionRow);
     document.body.appendChild(composer);
 
     const manager = new AnchorPositionManager({
-      resolveAnchor: () => toolbar,
-      resolveContainer: () => composer,
+      resolveAnchor: () => sendButton,
+      resolveContainer: () => actionRow,
     });
 
     const cleanup = manager.connect();
     const host = manager.getHostElement();
 
     expect(host).not.toBeNull();
-    expect(host?.style.position).toBe('absolute');
-    expect(host?.style.marginLeft).toBe('');
-    expect(host?.style.marginRight).toBe('');
+    expect(manager.getAnchorElement()).toBe(sendButton);
+    expect(host?.parentElement).toBe(actionRow);
+    expect(host?.nextElementSibling).toBe(sendButton);
+    expect(host?.previousElementSibling).toBe(micButton);
+    expect(host?.style.position).toBe('relative');
+    expect(host?.style.marginLeft).toBe('6px');
+    expect(host?.style.marginRight).toBe('6px');
 
     cleanup();
 

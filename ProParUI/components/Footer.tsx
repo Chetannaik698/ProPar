@@ -64,7 +64,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-line pt-8 text-[13px] text-ink-faint sm:flex-row">
-          <p>© {new Date().getFullYear()} ProPar. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ProPaar. All rights reserved.</p>
           <p>Made for people who&rsquo;d rather think twice than send twice.</p>
         </div>
       </div>

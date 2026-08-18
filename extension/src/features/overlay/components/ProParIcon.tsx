@@ -19,11 +19,11 @@ export function ProParIcon({ isVisible, isDark = false, onClick, position }: Pro
         opacity: isVisible ? 1 : 0,
         scale: reduceMotion ? 1 : 0.98,
       }}
-      aria-controls="propar-popup"
-      aria-expanded={false}
+      aria-controls="propaar-popup"
+      aria-expanded={isVisible}
       aria-haspopup="dialog"
-      aria-label="Analyze prompt with ProPar"
-      className="propar-icon"
+      aria-label="Analyze prompt with ProPaar"
+      className="propaar-icon"
       initial={{ opacity: 0, scale: 0.98 }}
       exit={{ opacity: 0, scale: 0.98 }}
       onClick={onClick}

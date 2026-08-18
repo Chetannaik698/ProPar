@@ -11,7 +11,7 @@ export function UseCases() {
             Use cases
           </p>
           <h2 className="mt-4 text-display-lg font-medium text-balance">
-            Wherever clarity matters, ProPar helps.
+            Wherever clarity matters, ProPaar helps.
           </h2>
         </Reveal>
 

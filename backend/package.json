@@ -1,7 +1,7 @@
 {
-  "name": "propar-backend",
+  "name": "propaar-backend",
   "version": "1.0.0",
-  "description": "ProPar API - AI Thinking Partner Backend",
+  "description": "ProPaar API - AI Thinking Partner Backend",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {

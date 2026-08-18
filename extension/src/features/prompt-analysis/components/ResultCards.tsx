@@ -25,7 +25,7 @@ export function ErrorState({ message, onRetry, onDismiss }: { message: string; o
   return (
     <section className="state-view error-state" role="alert">
       <div className="state-icon state-icon-error"><X size={20} /></div>
-      <div><h2 className="state-title">Unable to connect to ProPar.</h2><p className="state-description">{message || 'Please check your connection and try again.'}</p></div>
+      <div><h2 className="state-title">Unable to connect to ProPaar.</h2><p className="state-description">{message || 'Please check your connection and try again.'}</p></div>
       <div className="state-actions">
         <button className="primary-action" onClick={onRetry} type="button"><RefreshCw size={15} /> Retry</button>
         <button className="secondary-action" onClick={onDismiss} type="button">Dismiss</button>

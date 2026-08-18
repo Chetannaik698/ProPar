@@ -14,7 +14,7 @@ export interface PlatformContextAdapter {
 }
 
 export type PlatformId = 'chatgpt' | 'gemini' | 'claude' | 'linkedin' | 'gmail' | 'perplexity';
-export type BackendPlatformId = 'chatgpt' | 'claude' | 'linkedin' | 'gmail';
+export type BackendPlatformId = 'chatgpt' | 'gemini' | 'claude' | 'linkedin' | 'gmail';
 
 export interface PlatformLabels {
   emptyTitle: string;

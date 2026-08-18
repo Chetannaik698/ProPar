@@ -6,7 +6,7 @@ import { fadeUp, stagger, viewportOnce } from "@/animations/variants";
 
 const POINTS = [
   { icon: Lock, title: "Analyzed, not stored", copy: "Your drafts are reviewed in the moment and discarded immediately after." },
-  { icon: EyeOff, title: "Never used for training", copy: "Nothing you write becomes part of any model, ProPar's or anyone else's." },
+  { icon: EyeOff, title: "Never used for training", copy: "Nothing you write becomes part of any model, ProPaar's or anyone else's." },
   { icon: Trash2, title: "You control the data", copy: "Clear your history at any time from the extension settings, in one click." },
 ];
 

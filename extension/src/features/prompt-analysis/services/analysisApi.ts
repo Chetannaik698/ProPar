@@ -36,7 +36,7 @@ function sendAnalyzeMessage(
   platform: PlatformId,
   clarificationAnswers?: ClarificationAnswer[],
 ): Promise<AnalysisResponse> {
-  console.debug('[ProPar] Message sent to background', { platform, promptLength: prompt.length });
+  console.debug('[ProPaar] Message sent to background', { platform, promptLength: prompt.length });
 
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(
@@ -49,24 +49,24 @@ function sendAnalyzeMessage(
       (response: BackgroundAnalyzeResponse | undefined) => {
         const runtimeError = chrome.runtime.lastError;
         if (runtimeError) {
-          console.error('[ProPar] Background message failed', runtimeError.message);
-          reject(new AnalysisError(runtimeError.message || 'Unable to connect to ProPar Background.', 'network'));
+          console.error('[ProPaar] Background message failed', runtimeError.message);
+          reject(new AnalysisError(runtimeError.message || 'Unable to connect to ProPaar Background.', 'network'));
           return;
         }
 
         if (!response) {
-          console.error('[ProPar] Background returned no response');
-          reject(new AnalysisError('Unable to connect to ProPar Background.', 'network'));
+          console.error('[ProPaar] Background returned no response');
+          reject(new AnalysisError('Unable to connect to ProPaar Background.', 'network'));
           return;
         }
 
         if (!response.ok || !response.data) {
-          console.error('[ProPar] Background analysis failed', response);
-          reject(new AnalysisError(response.error || 'Unable to connect to ProPar Backend.', response.code ?? 'unknown'));
+          console.error('[ProPaar] Background analysis failed', response);
+          reject(new AnalysisError(response.error || 'Unable to connect to ProPaar Backend.', response.code ?? 'unknown'));
           return;
         }
 
-        console.debug('[ProPar] Background response received', { platform });
+        console.debug('[ProPaar] Background response received', { platform });
         resolve(response.data);
       },
     );
@@ -79,7 +79,7 @@ async function fetchAnalyzeDirect(
   signal: AbortSignal,
   clarificationAnswers?: ClarificationAnswer[],
 ): Promise<AnalysisResponse> {
-  console.debug('[ProPar] Backend request started', { platform, promptLength: prompt.length });
+  console.debug('[ProPaar] Backend request started', { platform, promptLength: prompt.length });
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -88,24 +88,24 @@ async function fetchAnalyzeDirect(
   });
 
   if (!res.ok) {
-    console.error('[ProPar] Backend request failed', { status: res.status, statusText: res.statusText });
-    throw new AnalysisError('Unable to connect to ProPar Backend.', 'network');
+    console.error('[ProPaar] Backend request failed', { status: res.status, statusText: res.statusText });
+    throw new AnalysisError('Unable to connect to ProPaar Backend.', 'network');
   }
 
   let json: unknown;
   try {
     json = await res.json();
   } catch {
-    console.error('[ProPar] Backend response JSON parsing failed');
+    console.error('[ProPaar] Backend response JSON parsing failed');
     throw new AnalysisError('Unexpected server response.', 'invalid');
   }
 
   if (!hasAnalysisPayload(json)) {
-    console.error('[ProPar] Backend response missing analysis payload', json);
+    console.error('[ProPaar] Backend response missing analysis payload', json);
     throw new AnalysisError('Unexpected server response.', 'invalid');
   }
 
-  console.debug('[ProPar] Backend response received', { platform });
+  console.debug('[ProPaar] Backend response received', { platform });
   return json;
 }
 
@@ -137,12 +137,12 @@ export async function analyzePrompt(
   } catch (err: unknown) {
     if (isAbortError(err)) {
       // Determine whether it was timeout by checking controller
-      console.error('[ProPar] Backend request timed out');
+      console.error('[ProPaar] Backend request timed out');
       throw new AnalysisError('Analysis timed out. Please try again.', 'timeout');
     }
     if (err instanceof AnalysisError) throw err;
-    console.error('[ProPar] Backend request failed before response', err);
-    throw new AnalysisError('Unable to connect to ProPar Backend.', 'network');
+    console.error('[ProPaar] Backend request failed before response', err);
+    throw new AnalysisError('Unable to connect to ProPaar Backend.', 'network');
   } finally {
     window.clearTimeout(timeout);
   }

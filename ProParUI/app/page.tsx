@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import Hero from "@/components/sections/Hero";
 import TrustedBy from "@/components/sections/TrustedBy";
 import WhyCommunicationFails from "@/components/sections/WhyCommunicationFails";
-import HowProParThinks from "@/components/sections/HowProParThinks";
+import HowProPaarThinks from "@/components/sections/HowProPaarThinks";
 import InteractiveWorkflow from "@/components/sections/InteractiveWorkflow";
 import ProductPreview from "@/components/sections/ProductPreview";
 import CrossPlatform from "@/components/sections/CrossPlatform";
@@ -22,7 +22,7 @@ export default function Home() {
         <Hero />
         <TrustedBy />
         <WhyCommunicationFails />
-        <HowProParThinks />
+        <HowProPaarThinks />
         <InteractiveWorkflow />
         <ProductPreview />
         <CrossPlatform />

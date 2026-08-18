@@ -58,7 +58,7 @@ export default function DashboardPage() {
             <div>
               <p className="text-[14.5px] font-semibold text-green-900">Active and Connected</p>
               <p className="text-[13px] text-green-700 mt-0.5">
-                ProPar is scanning your writing locally and protecting your composer windows.
+                ProPaar is scanning your writing locally and protecting your composer windows.
               </p>
             </div>
           </div>

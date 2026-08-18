@@ -19,7 +19,7 @@ const FEATURES = [
   {
     icon: Target,
     title: "Goal discovery",
-    description: "ProPar identifies what you're actually trying to achieve, even when your draft doesn't say it directly.",
+    description: "ProPaar identifies what you're actually trying to achieve, even when your draft doesn't say it directly.",
   },
   {
     icon: SearchCode,
@@ -68,7 +68,7 @@ const FEATURES = [
   },
 ];
 
-export default function HowProParThinks() {
+export default function HowProPaarThinks() {
   return (
     <section id="how-propar-thinks" className="py-24 md:py-32">
       <div className="container-content">
@@ -79,7 +79,7 @@ export default function HowProParThinks() {
           variants={fadeUp}
           className="mb-14 max-w-[56ch]"
         >
-          <p className="eyebrow mb-5">How ProPar thinks</p>
+          <p className="eyebrow mb-5">How ProPaar thinks</p>
           <h2 className="section-heading">
             Ten quiet checks, run in the second before you hit send.
           </h2>

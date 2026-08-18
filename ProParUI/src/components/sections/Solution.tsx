@@ -10,10 +10,10 @@ export function Solution() {
             The approach
           </p>
           <h2 className="mt-4 text-display-lg font-medium text-balance">
-            ProPar reviews your thinking, not just your grammar.
+            ProPaar reviews your thinking, not just your grammar.
           </h2>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted md:text-base">
-            Before your message leaves your hands, ProPar checks it against what you&apos;re
+            Before your message leaves your hands, ProPaar checks it against what you&apos;re
             actually trying to achieve — surfacing the context, assumptions, and gaps a
             careful editor would catch, then helping you close them.
           </p>

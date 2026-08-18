@@ -52,7 +52,7 @@ export const perplexityAdapter: ActivePlatformAdapter = {
   communicationStyle: 'Deep search & reasoning prompt review before sending.',
   labels: {
     emptyTitle: 'Start typing in Perplexity.',
-    emptyDescription: 'ProPar will analyze your query and context before you submit.',
+    emptyDescription: 'ProPaar will analyze your query and context before you submit.',
     analyzeAction: 'Analyze search',
     analysisCompleteTitle: 'Your refined search prompt is ready.',
     goalCaption: 'The core information need behind your query.',

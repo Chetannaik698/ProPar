@@ -62,7 +62,7 @@ export default function FinalCTA() {
               className="mt-9 inline-flex items-center gap-2 rounded-full bg-green-500 px-7 py-3.5 text-[15px] font-semibold text-white shadow-soft transition-all duration-300"
             >
               <CircleCheck size={18} className="stroke-[2.5]" />
-              ProPar is added
+              ProPaar is added
             </div>
           ) : (
             <a

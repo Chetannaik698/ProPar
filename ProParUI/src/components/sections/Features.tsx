@@ -40,7 +40,7 @@ export function Features() {
             Features
           </p>
           <h2 className="mt-4 text-display-lg font-medium text-balance">
-            Everything ProPar checks before you send.
+            Everything ProPaar checks before you send.
           </h2>
         </Reveal>
 

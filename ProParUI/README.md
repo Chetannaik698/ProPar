@@ -1,6 +1,6 @@
-# ProPar — Marketing Site
+# ProPaar — Marketing Site
 
-Think Before You Send. A production-ready Next.js 15 marketing site for ProPar.
+Think Before You Send. A production-ready Next.js 15 marketing site for ProPaar.
 
 ## Stack
 

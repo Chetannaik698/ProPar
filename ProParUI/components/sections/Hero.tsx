@@ -141,7 +141,7 @@ export default function Hero() {
           </motion.h1>
 
           <motion.p variants={fadeUp} className="body-copy mt-7 max-w-[46ch] text-[18px]">
-            ProPar reviews your prompts, emails, LinkedIn posts, and professional writing before
+            ProPaar reviews your prompts, emails, LinkedIn posts, and professional writing before
             you hit send — helping you communicate with greater clarity, confidence, and impact.
           </motion.p>
 
@@ -180,7 +180,7 @@ export default function Hero() {
                   className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-green-500 px-6 py-3.5 text-[15px] font-semibold text-white shadow-soft transition-all duration-300"
                 >
                   <CircleCheck size={18} className="stroke-[2.5]" />
-                  ProPar is added
+                  ProPaar is added
                 </div>
               ) : (
                 <a

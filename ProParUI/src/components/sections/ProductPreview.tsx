@@ -72,7 +72,7 @@ export function ProductPreview() {
                 <div>
                   <p className="mb-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-accent-soft">
                     <ArrowRight className="h-3 w-3" aria-hidden />
-                    After ProPar
+                    After ProPaar
                   </p>
                   <div className="rounded-lg border border-accent-dim/50 bg-accent/5 p-4 font-mono text-[13px] leading-relaxed text-ink">
                     {demo.after}

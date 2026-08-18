@@ -74,7 +74,7 @@ export function ProParPopup({ isDark = false, isOpen, onClose, position, autoAna
             y: reduceMotion ? 0 : 0,
           }}
           aria-modal="false"
-          className="propar-popup"
+          className="propaar-popup"
           data-theme={isDark ? 'dark' : 'light'}
           exit={{
             opacity: 0,

@@ -66,8 +66,8 @@ export const gmailAdapter: ActivePlatformAdapter = {
   backendPlatform: 'gmail',
   communicationStyle: 'Professional communication review with actionable growth suggestions.',
   labels: {
-    emptyTitle: 'Compose with ProPar',
-    emptyDescription: 'ProPar will guide your thinking before you write your email.',
+    emptyTitle: 'Compose with ProPaar',
+    emptyDescription: 'ProPaar will guide your thinking before you write your email.',
     analyzeAction: 'Compose email',
     analysisCompleteTitle: 'Your draft is ready.',
     goalCaption: 'The purpose of your email.',
@@ -150,7 +150,7 @@ export const gmailAdapter: ActivePlatformAdapter = {
     const sendButton = findActionButton(composer, SEND_BUTTON_SELECTORS);
     if (!sendButton) return null;
     // Anchor to the Send button group container (e.g. parent of the Send button)
-    // so that the ProPar icon is mounted outside the blue button pill.
+    // so that the ProPaar icon is mounted outside the blue button pill.
     return sendButton.parentElement ?? sendButton;
   },
   getComposerContainer(composer: HTMLElement | null): HTMLElement | null {

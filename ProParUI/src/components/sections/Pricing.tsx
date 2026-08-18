@@ -6,7 +6,7 @@ const plans = [
   {
     name: "Free",
     price: "$0",
-    description: "Everything you need to try ProPar during the public beta.",
+    description: "Everything you need to try ProPaar during the public beta.",
     features: ["Unlimited reviews", "All supported platforms", "Local-only processing"],
     current: true,
   },

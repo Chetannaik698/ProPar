@@ -18,7 +18,7 @@ export function FinalCTA() {
         </Reveal>
         <Reveal delay={0.08}>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted md:text-base">
-            Free during the public beta. Add ProPar to Chrome and try it on your next message.
+            Free during the public beta. Add ProPaar to Chrome and try it on your next message.
           </p>
         </Reveal>
         <Reveal delay={0.15}>

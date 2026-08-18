@@ -37,19 +37,19 @@ export const workflowStages = [
     id: "input",
     label: "You write",
     title: "Start typing, anywhere",
-    description: "A prompt, an email, a LinkedIn post. ProPar reads as you write, before you send.",
+    description: "A prompt, an email, a LinkedIn post. ProPaar reads as you write, before you send.",
   },
   {
     id: "analyze",
-    label: "ProPar reads",
+    label: "ProPaar reads",
     title: "Analyzing your intent",
-    description: "ProPar maps what you're trying to achieve against what you've actually said.",
+    description: "ProPaar maps what you're trying to achieve against what you've actually said.",
   },
   {
     id: "goal",
     label: "Goal discovery",
     title: "What are you really asking for?",
-    description: "ProPar identifies the underlying goal, even when it isn't stated directly.",
+    description: "ProPaar identifies the underlying goal, even when it isn't stated directly.",
   },
   {
     id: "context",
@@ -67,7 +67,7 @@ export const workflowStages = [
     id: "final",
     label: "Stronger message",
     title: "A clearer version, ready to send",
-    description: "ProPar proposes a revision. You stay in control of every word.",
+    description: "ProPaar proposes a revision. You stay in control of every word.",
   },
 ] as const;
 
@@ -180,7 +180,7 @@ export const useCases = [
 export const testimonials = [
   {
     quote:
-      "I write a lot of prompts. ProPar is the first tool that made me think harder before I hit send, not after.",
+      "I write a lot of prompts. ProPaar is the first tool that made me think harder before I hit send, not after.",
     name: "Elena Marks",
     role: "Product Lead, Northbeam",
   },
@@ -200,14 +200,14 @@ export const testimonials = [
 
 export const faqs = [
   {
-    question: "What exactly does ProPar do?",
+    question: "What exactly does ProPaar do?",
     answer:
-      "ProPar reviews what you're about to send — a prompt, an email, a LinkedIn post — and flags missing context, hidden assumptions, and unclear goals before you send it, then proposes a stronger version.",
+      "ProPaar reviews what you're about to send — a prompt, an email, a LinkedIn post — and flags missing context, hidden assumptions, and unclear goals before you send it, then proposes a stronger version.",
   },
   {
-    question: "Does ProPar store what I write?",
+    question: "Does ProPaar store what I write?",
     answer:
-      "No. ProPar runs its analysis locally in your browser by default. Your prompts and messages are not stored or sent to a server unless you explicitly choose to.",
+      "No. ProPaar runs its analysis locally in your browser by default. Your prompts and messages are not stored or sent to a server unless you explicitly choose to.",
   },
   {
     question: "Which platforms does it work with?",
@@ -215,18 +215,18 @@ export const faqs = [
       "ChatGPT, Claude, Gemini, LinkedIn, and email today, with more surfaces on the way.",
   },
   {
-    question: "Is ProPar a grammar checker?",
+    question: "Is ProPaar a grammar checker?",
     answer:
-      "No. Grammar tools fix wording after the fact. ProPar focuses on thinking — the context, assumptions, and goals — before you write the final version.",
+      "No. Grammar tools fix wording after the fact. ProPaar focuses on thinking — the context, assumptions, and goals — before you write the final version.",
   },
   {
     question: "How much does it cost?",
     answer:
-      "ProPar is free during the public beta. Paid plans for teams are coming soon.",
+      "ProPaar is free during the public beta. Paid plans for teams are coming soon.",
   },
   {
     question: "How do I install it?",
     answer:
-      "Add ProPar to Chrome from the Chrome Web Store. It takes under a minute, and there's nothing to configure to get started.",
+      "Add ProPaar to Chrome from the Chrome Web Store. It takes under a minute, and there's nothing to configure to get started.",
   },
 ];

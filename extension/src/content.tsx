@@ -4,15 +4,15 @@ import { ProParExtension } from './app/ProParExtension';
 import styles from './styles/index.css?inline';
 
 function mount(): void {
-  if (document.getElementById('propar-extension-root')) {
-    console.debug('[ProPar] Content script already mounted');
+  if (document.getElementById('propaar-extension-root')) {
+    console.debug('[ProPaar] Content script already mounted');
     return;
   }
 
-  // Mount ProPar extension to document body
+  // Mount ProPaar extension to document body
   // The extension uses an overlay architecture and does NOT modify ChatGPT's DOM
   const rootElement = document.createElement('div');
-  rootElement.id = 'propar-extension-root';
+  rootElement.id = 'propaar-extension-root';
   rootElement.style.cssText = `
     position: fixed;
     top: 0;
@@ -24,25 +24,25 @@ function mount(): void {
   `;
   document.body.appendChild(rootElement);
 
-  // Inject light DOM styles to ensure the portaled ProParIcon button has a transparent background
+  // Inject light DOM styles to ensure the portaled ProPaarIcon button has a transparent background
   const globalStyle = document.createElement('style');
-  globalStyle.id = 'propar-extension-global-styles';
+  globalStyle.id = 'propaar-extension-global-styles';
   globalStyle.textContent = `
-    .propar-icon {
+    .propaar-icon {
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
       outline: none !important;
     }
-    .propar-icon:hover {
+    .propaar-icon:hover {
       background: rgba(0, 0, 0, 0.06) !important;
     }
-    [data-theme="dark"] .propar-icon:hover {
+    [data-theme="dark"] .propaar-icon:hover {
       background: rgba(255, 255, 255, 0.12) !important;
     }
 
     /* Gemini-specific overrides scoped to the relative flex host */
-    [data-propar-anchor-host] {
+    [data-propaar-anchor-host] {
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -55,7 +55,7 @@ function mount(): void {
       pointer-events: auto !important;
       z-index: 2147483647 !important;
     }
-    [data-propar-anchor-host] .propar-icon {
+    [data-propaar-anchor-host] .propaar-icon {
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -72,21 +72,21 @@ function mount(): void {
       outline: none !important;
       transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
-    [data-propar-anchor-host] .propar-icon:hover {
+    [data-propaar-anchor-host] .propaar-icon:hover {
       background: rgba(31, 31, 31, 0.08) !important;
     }
-    html[data-theme="dark"] [data-propar-anchor-host] .propar-icon:hover,
-    html.dark [data-propar-anchor-host] .propar-icon:hover {
+    html[data-theme="dark"] [data-propaar-anchor-host] .propaar-icon:hover,
+    html.dark [data-propaar-anchor-host] .propaar-icon:hover {
       background: rgba(227, 227, 227, 0.08) !important;
     }
-    [data-propar-anchor-host] .propar-icon img {
+    [data-propaar-anchor-host] .propaar-icon img {
       width: 19px !important;
       height: 19px !important;
       max-width: 19px !important;
       max-height: 19px !important;
       display: block !important;
     }
-    [data-propar-anchor-host] .propar-icon:focus-visible {
+    [data-propaar-anchor-host] .propaar-icon:focus-visible {
       outline: 2px solid #0b57d0 !important;
       outline-offset: 2px !important;
     }
@@ -158,7 +158,7 @@ function mount(): void {
   );
 }
 
-console.log('[ProPar] Content script loaded on URL:', window.location.href);
+console.log('[ProPaar] Content script loaded on URL:', window.location.href);
 
 // Mount when DOM is ready
 if (document.readyState === 'loading') {

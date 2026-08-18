@@ -1,5 +1,5 @@
 /**
- * Strongly typed interfaces for ProPar Brain AI responses and builder.
+ * Strongly typed interfaces for ProPaar Brain AI responses and builder.
  */
 
 export interface Analysis {

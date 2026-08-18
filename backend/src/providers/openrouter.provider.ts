@@ -99,8 +99,8 @@ export class OpenRouterProvider implements AiProvider {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${aiConfig.openRouter.apiKey ?? ''}`,
-          'HTTP-Referer': 'https://propar.app',
-          'X-Title': 'ProPar',
+          'HTTP-Referer': 'https://propaar.netlify.app',
+          'X-Title': 'ProPaar',
         },
         body: JSON.stringify({
           model,

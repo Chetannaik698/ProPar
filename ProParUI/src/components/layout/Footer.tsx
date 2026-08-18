@@ -17,7 +17,7 @@ const columns = [
     links: [
       { label: "Privacy policy", href: "/privacy" },
       { label: "Terms of service", href: "/terms" },
-      { label: "Contact", href: "mailto:hello@propar.app" },
+      { label: "Contact", href: "mailto:hello@propaar.app" },
     ],
   },
 ];
@@ -29,7 +29,7 @@ export function Footer() {
         <div className="max-w-xs">
           <Logo />
           <p className="mt-4 text-sm leading-relaxed text-muted">
-            ProPar helps you think before you send — reviewing prompts, emails, and
+            ProPaar helps you think before you send — reviewing prompts, emails, and
             professional writing for clarity, before they leave your hands.
           </p>
         </div>
@@ -53,7 +53,7 @@ export function Footer() {
       </Container>
 
       <Container className="flex flex-col items-center justify-between gap-4 border-t border-border py-6 text-xs text-muted-2 md:flex-row">
-        <p>© {new Date().getFullYear()} ProPar. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} ProPaar. All rights reserved.</p>
         <nav className="flex gap-6" aria-label="Footer">
           {nav.slice(0, 3).map((item) => (
             <a key={item.href} href={item.href} className="hover:text-ink">

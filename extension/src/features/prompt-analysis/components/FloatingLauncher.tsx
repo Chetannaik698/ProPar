@@ -18,7 +18,7 @@ export const FloatingLauncher = forwardRef<HTMLButtonElement, FloatingLauncherPr
         aria-controls="propar-analysis-popover"
         aria-expanded={isOpen}
         aria-haspopup="dialog"
-        aria-label="Analyze prompt with ProPar"
+        aria-label="Analyze prompt with ProPaar"
         className="flex h-[var(--propar-control-size,36px)] w-[var(--propar-control-size,36px)] cursor-pointer items-center justify-center rounded-[var(--propar-control-radius,12px)] border-0 bg-transparent p-0 transition-colors duration-150 hover:bg-[var(--propar-hover,rgba(0,0,0,0.06))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--propar-focus,#0284c7)]" data-theme={isDark ? 'dark' : 'light'}
         onClick={onClick}
         ref={ref}

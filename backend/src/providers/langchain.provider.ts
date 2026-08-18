@@ -42,8 +42,8 @@ export class LangChainProvider implements AiProvider {
         configuration: {
           baseURL: 'https://openrouter.ai/api/v1',
           defaultHeaders: {
-            'HTTP-Referer': 'https://propar.app',
-            'X-Title': 'ProPar',
+            'HTTP-Referer': 'https://propaar.netlify.app',
+            'X-Title': 'ProPaar',
           },
         },
         temperature: 0.2,

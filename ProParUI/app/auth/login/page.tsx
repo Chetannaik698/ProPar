@@ -92,7 +92,7 @@ export default function LoginPage() {
   }[step];
 
   const descText = {
-    email: "Sign in to review your writing with ProPar",
+    email: "Sign in to review your writing with ProPaar",
     password: "Enter your password to sign in",
     signup: "Choose a name and password to get started",
     forgot: "We'll email you a secure link to reset your password",
@@ -654,7 +654,7 @@ export default function LoginPage() {
           variants={itemVariants}
           className="mt-6 text-center text-[12.5px] leading-relaxed text-[#8A8F98]"
         >
-          By continuing, you agree to ProPar&apos;s{" "}
+          By continuing, you agree to ProPaar&apos;s{" "}
           <a href="#" className="underline underline-offset-2 transition-colors hover:text-[#3B3F46]">
             Terms of Service
           </a>{" "}

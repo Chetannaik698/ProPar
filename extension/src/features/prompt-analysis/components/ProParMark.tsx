@@ -15,7 +15,7 @@ export function ProParMark({ className = '', isDark = false }: ProParMarkProps) 
   return (
     <img
       src={logoUrl}
-      alt="ProPar"
+      alt="ProPaar"
       className={`object-contain ${className}`}
       style={{
         display: 'block',

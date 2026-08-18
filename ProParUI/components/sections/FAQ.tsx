@@ -9,23 +9,23 @@ import type { FaqItem } from "@/types";
 const FAQS: FaqItem[] = [
   {
     question: "How is this different from grammar or spell-check tools?",
-    answer: "Grammar tools look at the sentence you wrote. ProPar looks at the thinking behind it — what you're trying to achieve, what your reader needs to know, and what you might have assumed without saying.",
+    answer: "Grammar tools look at the sentence you wrote. ProPaar looks at the thinking behind it — what you're trying to achieve, what your reader needs to know, and what you might have assumed without saying.",
   },
   {
-    question: "Which platforms does ProPar work in?",
-    answer: "ProPar runs as a Chrome extension across ChatGPT, Claude, Gemini, Gmail, Outlook, and LinkedIn, with more platforms on the way.",
+    question: "Which platforms does ProPaar work in?",
+    answer: "ProPaar runs as a Chrome extension across ChatGPT, Claude, Gemini, Gmail, Outlook, and LinkedIn, with more platforms on the way.",
   },
   {
-    question: "Does ProPar store what I write?",
+    question: "Does ProPaar store what I write?",
     answer: "No. Drafts are analyzed in the moment to generate suggestions and are not stored or used to train any model.",
   },
   {
     question: "Will it rewrite my voice into something generic?",
-    answer: "No — ProPar keeps your tone and adjusts specifics: missing context, unclear goals, and assumptions. It suggests, you decide what to keep.",
+    answer: "No — ProPaar keeps your tone and adjusts specifics: missing context, unclear goals, and assumptions. It suggests, you decide what to keep.",
   },
   {
     question: "Is there a free plan?",
-    answer: "Yes. ProPar is free to install and use for individual writing. Team plans are coming soon.",
+    answer: "Yes. ProPaar is free to install and use for individual writing. Team plans are coming soon.",
   },
 ];
 

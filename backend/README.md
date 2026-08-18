@@ -145,7 +145,7 @@ Create a `.env` file in the backend directory with the following variables:
 | `OPENROUTER_FALLBACK_MODELS` | Comma-separated fallback model ids. Used only after provider/model failures. | `google/gemini-2.0-flash` |
 | `AI_REQUEST_TIMEOUT_MS` | Provider request timeout | `30000` |
 | `AI_MAX_COMPLETION_TOKENS` | Maximum provider completion tokens | `6000` |
-| `ALLOWED_ORIGINS` | Comma-separated CORS origins (production) | `https://propar.app,https://www.propar.app` |
+| `ALLOWED_ORIGINS` | Comma-separated CORS origins (production) | `https://propaar.netlify.app` |
 
 ### Environment Variable Validation
 

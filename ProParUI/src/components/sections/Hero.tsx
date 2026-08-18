@@ -34,7 +34,7 @@ export function Hero() {
 
         <Reveal delay={0.1}>
           <p className="mt-6 max-w-xl text-balance text-base leading-relaxed text-muted md:text-lg">
-            ProPar reviews your prompts, emails, LinkedIn posts, and professional writing
+            ProPaar reviews your prompts, emails, LinkedIn posts, and professional writing
             before you hit send — helping you communicate with greater clarity, confidence,
             and impact.
           </p>

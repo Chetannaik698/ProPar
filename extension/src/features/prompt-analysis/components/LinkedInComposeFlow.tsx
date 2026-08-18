@@ -47,7 +47,7 @@ const QUESTIONS_MAP: Record<string, LinkedInQuestion[]> = {
     { id: 'tone', question: 'Preferred tone?', placeholder: 'e.g. Authentic, vulnerable, motivational' },
   ],
   'product launch': [
-    { id: 'product', question: 'What are you launching or announcing?', placeholder: 'e.g. ProPar Chrome Extension 2.0' },
+    { id: 'product', question: 'What are you launching or announcing?', placeholder: 'e.g. ProPaar Chrome Extension 2.0' },
     { id: 'value', question: 'What major problem does it solve for users?', placeholder: 'e.g. Eliminates weak prompts and unpolished post drafts before send' },
     { id: 'features', question: 'Key 2-3 features or highlights?', placeholder: 'e.g. Instant RAG analysis, multi-platform support' },
     { id: 'cta', question: 'Call to action / link context?', placeholder: 'e.g. Try it free on Chrome Web Store (link in comments)' },
@@ -187,7 +187,7 @@ export function LinkedInComposeFlow({ onStartAnalysis }: LinkedInComposeFlowProp
       <div className="clarify-view">
         <div className="results-intro">
           <div>
-            <p className="results-kicker">Craft LinkedIn Post with ProPar</p>
+            <p className="results-kicker">Craft LinkedIn Post with ProPaar</p>
             <h2>What kind of post are you writing?</h2>
           </div>
         </div>

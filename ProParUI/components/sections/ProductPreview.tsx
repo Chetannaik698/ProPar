@@ -111,7 +111,7 @@ export default function ProductPreview() {
                 </div>
                 <div>
                   <p className="mb-2.5 text-[12px] font-medium uppercase tracking-wide text-accent">
-                    After ProPar
+                    After ProPaar
                   </p>
                   <div className="rounded-xl border border-accent/25 bg-accent-soft/60 p-4 font-mono text-[14px] leading-relaxed text-ink">
                     {activeTab.after}

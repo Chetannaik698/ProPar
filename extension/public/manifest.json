@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "ProPar Alpha",
+  "name": "ProPaar Alpha",
   "description": "Think better before you send on ChatGPT, Gemini, and Claude.",
   "version": "0.1.0",
   "minimum_chrome_version": "120",
@@ -10,7 +10,7 @@
     "128": "icons/icon-128.png"
   },
   "action": {
-    "default_title": "ProPar",
+    "default_title": "ProPaar",
     "default_icon": {
       "16": "icons/icon-16.png",
       "48": "icons/icon-48.png",
@@ -23,7 +23,7 @@
         "default": "Alt+P",
         "mac": "Alt+P"
       },
-      "description": "Analyze prompt with ProPar"
+      "description": "Analyze prompt with ProPaar"
     }
   },
   "background": {

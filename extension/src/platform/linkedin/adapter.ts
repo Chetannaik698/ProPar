@@ -173,8 +173,8 @@ export class LinkedInAdapter implements ActivePlatformAdapter {
   readonly backendPlatform = 'linkedin' as const;
   readonly communicationStyle = 'Professional communication review with actionable growth suggestions.';
   readonly labels = {
-    emptyTitle: 'Craft LinkedIn Post with ProPar',
-    emptyDescription: 'ProPar will review your hook, storytelling, and audience positioning before you post.',
+    emptyTitle: 'Craft LinkedIn Post with ProPaar',
+    emptyDescription: 'ProPaar will review your hook, storytelling, and audience positioning before you post.',
     analyzeAction: 'Review post',
     analysisCompleteTitle: 'Your communication review is ready.',
     goalCaption: 'The inferred purpose of your post and why.',

@@ -119,7 +119,7 @@ function CallbackContent() {
                 You&apos;re in!
               </h1>
               <p className="text-[14px] text-[#8A8F98]">
-                Redirecting you to ProPar…
+                Redirecting you to ProPaar…
               </p>
             </motion.div>
           )}

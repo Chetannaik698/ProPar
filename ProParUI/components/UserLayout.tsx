@@ -85,7 +85,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
                 <span className="block h-2 w-2 rounded-full bg-[#2F5DE0]" />
               </span>
               <span className="font-display text-md tracking-tight text-[#0B0D12]">
-                ProPar
+                ProPaar
               </span>
             </Link>
             <button

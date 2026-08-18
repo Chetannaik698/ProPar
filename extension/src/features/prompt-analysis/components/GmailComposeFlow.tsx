@@ -188,7 +188,7 @@ export function GmailComposeFlow({ onStartAnalysis }: GmailComposeFlowProps) {
       <div className="clarify-view">
         <div className="results-intro">
           <div>
-            <p className="results-kicker">Compose with ProPar</p>
+            <p className="results-kicker">Compose with ProPaar</p>
             <h2>What would you like to write?</h2>
           </div>
         </div>

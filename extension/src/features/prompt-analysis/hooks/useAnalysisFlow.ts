@@ -86,7 +86,7 @@ export function useAnalysisFlow(platform: ActivePlatformAdapter = getActivePlatf
 
   const start = useCallback(async (customPrompt?: string) => {
     if (phase === 'analyzing') return; // prevent duplicate
-    console.debug('[ProPar] Review button clicked', { platform: platform.id });
+    console.debug('[ProPaar] Review button clicked', { platform: platform.id });
     clearInFlight();
     setError(null);
     setAnalysis(null);
@@ -96,7 +96,7 @@ export function useAnalysisFlow(platform: ActivePlatformAdapter = getActivePlatf
     const prompt = customPrompt !== undefined ? customPrompt : platform.readComposer();
     promptRef.current = prompt;
     setIsOriginalPromptEmpty(prompt.trim().length === 0);
-    console.debug('[ProPar] Editor text length', { platform: platform.id, length: prompt.length });
+    console.debug('[ProPaar] Editor text length', { platform: platform.id, length: prompt.length });
 
     // If no prompt, treat as empty string but still call backend
     const controller = new AbortController();
@@ -105,14 +105,14 @@ export function useAnalysisFlow(platform: ActivePlatformAdapter = getActivePlatf
     try {
       const res = await analyzePrompt(prompt, platform.backendPlatform, controller.signal);
       setAnalysis(res.analysis);
-      console.debug('[ProPar] Render started', { platform: platform.id });
+      console.debug('[ProPaar] Render started', { platform: platform.id });
 
       clearTimers();
       setCompletedStepCount(analysisSteps.length);
       setPhase(res.analysis.needsClarification ? 'clarifying' : 'complete');
-      console.debug('[ProPar] Render completed', { platform: platform.id, phase: res.analysis.needsClarification ? 'clarifying' : 'complete' });
+      console.debug('[ProPaar] Render completed', { platform: platform.id, phase: res.analysis.needsClarification ? 'clarifying' : 'complete' });
     } catch (err: unknown) {
-      console.warn('[ProPar] Network analysis unavailable, deploying local engine fallback', err);
+      console.warn('[ProPaar] Network analysis unavailable, deploying local engine fallback', err);
       
       const fallbackAnalysis = generateLocalFallbackAnalysis(prompt, platform.platformName);
       setAnalysis(fallbackAnalysis);

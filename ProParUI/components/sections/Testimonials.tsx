@@ -34,7 +34,7 @@ export default function Testimonials() {
           className="mb-14 max-w-[52ch]"
         >
           <p className="eyebrow mb-5">From people who send a lot of messages</p>
-          <h2 className="section-heading">What changes after a week with ProPar.</h2>
+          <h2 className="section-heading">What changes after a week with ProPaar.</h2>
         </motion.div>
 
         <motion.div

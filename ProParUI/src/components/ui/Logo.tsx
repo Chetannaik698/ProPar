@@ -18,13 +18,13 @@ export function Logo({
   return (
     <Link
       href={href}
-      aria-label="ProPar home"
+      aria-label="ProPaar home"
       className={cn("inline-flex items-center gap-2.5 group focus-ring rounded-xl p-0.5", className)}
     >
       <div className="flex items-center justify-center bg-black rounded-lg p-1.5 shadow-sm transition-transform duration-200 group-hover:scale-105">
         <Image
           src="/logo.png"
-          alt="ProPar Logo"
+          alt="ProPaar Logo"
           width={size}
           height={size}
           priority
@@ -33,7 +33,7 @@ export function Logo({
         />
       </div>
       {showWordmark && (
-        <span className={cn("font-display tracking-tight", wordmarkClassName)}>ProPar</span>
+        <span className={cn("font-display tracking-tight", wordmarkClassName)}>ProPaar</span>
       )}
     </Link>
   );

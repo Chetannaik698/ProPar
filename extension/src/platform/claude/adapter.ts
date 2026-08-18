@@ -50,7 +50,7 @@ export const claudeAdapter: ActivePlatformAdapter = {
   communicationStyle: 'Conversational assistant prompt with review-before-send composer behavior.',
   labels: {
     emptyTitle: 'Start typing in Claude.',
-    emptyDescription: 'ProPar will analyze your thinking before you send.',
+    emptyDescription: 'ProPaar will analyze your thinking before you send.',
     analyzeAction: 'Analyze prompt',
     analysisCompleteTitle: 'Your improved prompt is ready.',
     goalCaption: 'The real objective behind the prompt.',

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sign in",
-  description: "Sign in to ProPar — your AI writing companion.",
+  description: "Sign in to ProPaar — your AI writing companion.",
 };
 
 /**

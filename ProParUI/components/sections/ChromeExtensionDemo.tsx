@@ -19,7 +19,7 @@ export default function ChromeExtensionDemo() {
             Lives quietly in your toolbar. Speaks up only when it matters.
           </h2>
           <p className="body-copy mt-6 max-w-[46ch]">
-            ProPar sits in the corner of whatever {"you're"} writing in. It stays out of the way until
+            ProPaar sits in the corner of whatever {"you're"} writing in. It stays out of the way until
             {"there's"} something worth flagging — then it says so, in one line, with a fix ready.
           </p>
           <div className="mt-8 flex items-center gap-2 text-[14px] text-ink-faint">

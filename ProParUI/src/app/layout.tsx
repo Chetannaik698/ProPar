@@ -15,18 +15,18 @@ const mono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
-const siteUrl = "https://propar.app";
+const siteUrl = "https://propaar.netlify.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "ProPar — Think Before You Send.",
-    template: "%s · ProPar",
+    default: "ProPaar — Think Before You Send.",
+    template: "%s · ProPaar",
   },
   description:
-    "ProPar reviews your prompts, emails, LinkedIn posts, and professional writing before you hit send — surfacing missing context and blind spots so you communicate with more clarity.",
+    "ProPaar reviews your prompts, emails, LinkedIn posts, and professional writing before you hit send — surfacing missing context and blind spots so you communicate with more clarity.",
   keywords: [
-    "ProPar",
+    "ProPaar",
     "prompt review",
     "AI writing assistant",
     "before you send",
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     "chrome extension",
     "prompt enhancement",
   ],
-  authors: [{ name: "ProPar" }],
-  creator: "ProPar",
-  applicationName: "ProPar",
+  authors: [{ name: "ProPaar" }],
+  creator: "ProPaar",
+  applicationName: "ProPaar",
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",
@@ -45,18 +45,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    siteName: "ProPar",
-    title: "ProPar — Think Before You Send.",
+    siteName: "ProPaar",
+    title: "ProPaar — Think Before You Send.",
     description:
-      "Catch missing context and blind spots before you hit send. ProPar reviews prompts, emails, and professional writing in real time.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ProPar — Think Before You Send." }],
+      "Catch missing context and blind spots before you hit send. ProPaar reviews prompts, emails, and professional writing in real time.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ProPaar — Think Before You Send." }],
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ProPar — Think Before You Send.",
+    title: "ProPaar — Think Before You Send.",
     description:
-      "ProPar reviews your prompts, emails, and professional writing before you hit send.",
+      "ProPaar reviews your prompts, emails, and professional writing before you hit send.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -78,11 +78,11 @@ export const viewport: Viewport = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "ProPar",
+  name: "ProPaar",
   applicationCategory: "BrowserApplication",
   operatingSystem: "Chrome",
   description:
-    "ProPar reviews prompts, emails, LinkedIn posts, and professional writing before you hit send, surfacing missing context and blind spots.",
+    "ProPaar reviews prompts, emails, LinkedIn posts, and professional writing before you hit send, surfacing missing context and blind spots.",
   offers: {
     "@type": "Offer",
     price: "0",

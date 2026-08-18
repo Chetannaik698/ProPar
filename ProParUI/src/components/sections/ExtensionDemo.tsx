@@ -4,7 +4,7 @@ import { Reveal } from "@/components/animations/Reveal";
 import { Button } from "@/components/ui/Button";
 
 const steps = [
-  { icon: Chrome, label: "Add ProPar from the Chrome Web Store" },
+  { icon: Chrome, label: "Add ProPaar from the Chrome Web Store" },
   { icon: MousePointerClick, label: "Pin it, and it appears where you write" },
   { icon: CheckCircle2, label: "Write normally — review happens automatically" },
 ];
@@ -21,7 +21,7 @@ export function ExtensionDemo() {
             Thirty seconds to install. Nothing to configure.
           </h2>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted md:text-base">
-            ProPar lives quietly in your browser toolbar and activates on the platforms you
+            ProPaar lives quietly in your browser toolbar and activates on the platforms you
             already write in — no new tab, no separate app to remember to open.
           </p>
           <div className="mt-8">

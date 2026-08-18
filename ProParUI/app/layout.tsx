@@ -25,18 +25,18 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-const siteUrl = "https://propar.app";
+const siteUrl = "https://propaar.netlify.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "ProPar — Think Before You Send.",
-    template: "%s — ProPar",
+    default: "ProPaar — Think Before You Send.",
+    template: "%s — ProPaar",
   },
   description:
-    "ProPar reviews your prompts, emails, LinkedIn posts, and professional writing before you hit send — helping you communicate with greater clarity, confidence, and impact.",
+    "ProPaar reviews your prompts, emails, LinkedIn posts, and professional writing before you hit send — helping you communicate with greater clarity, confidence, and impact.",
   keywords: [
-    "ProPar",
+    "ProPaar",
     "prompt review",
     "writing assistant",
     "AI communication",
@@ -54,17 +54,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    title: "ProPar — Think Before You Send.",
+    title: "ProPaar — Think Before You Send.",
     description:
-      "ProPar reviews your writing before you hit send — surfacing missing context, hidden assumptions, and blind spots.",
-    siteName: "ProPar",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ProPar" }],
+      "ProPaar reviews your writing before you hit send — surfacing missing context, hidden assumptions, and blind spots.",
+    siteName: "ProPaar",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ProPaar" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ProPar — Think Before You Send.",
+    title: "ProPaar — Think Before You Send.",
     description:
-      "ProPar reviews your writing before you hit send — surfacing missing context, hidden assumptions, and blind spots.",
+      "ProPaar reviews your writing before you hit send — surfacing missing context, hidden assumptions, and blind spots.",
     images: ["/og-image.png"],
   },
   icons: {

@@ -17,15 +17,19 @@ const GEMINI_COMPOSER_SELECTORS = [
 const SEND_BUTTON_SELECTORS = [
   '[aria-label="Send message"]',
   '[aria-label*="send" i]',
+  '[aria-label*="submit" i]',
   '[data-testid*="send" i]',
   '[title*="send" i]',
+  'button.send-button',
 ] as const;
 
 const MICROPHONE_BUTTON_SELECTORS = [
   '[aria-label*="microphone" i]',
   '[aria-label*="voice" i]',
+  '[aria-label*="mic" i]',
   '[title*="microphone" i]',
   '[title*="voice" i]',
+  '[title*="mic" i]',
 ] as const;
 
 function isEditableComposer(element: HTMLElement): boolean {
@@ -113,7 +117,7 @@ export const geminiAdapter: ActivePlatformAdapter = {
   communicationStyle: 'Conversational assistant prompt with review-before-send composer behavior.',
   labels: {
     emptyTitle: 'Start typing in Gemini.',
-    emptyDescription: 'ProPar will analyze your thinking before you send.',
+    emptyDescription: 'ProPaar will analyze your thinking before you send.',
     analyzeAction: 'Analyze prompt',
     analysisCompleteTitle: 'Your improved prompt is ready.',
     goalCaption: 'The real objective behind the prompt.',
@@ -148,10 +152,15 @@ export const geminiAdapter: ActivePlatformAdapter = {
   getSecondaryActionButton: (composer) => findActionButton(composer, MICROPHONE_BUTTON_SELECTORS),
   getAnchorElement(composer: HTMLElement | null): HTMLElement | null {
     if (!composer) return null;
+    const sendButton = findActionButton(composer, SEND_BUTTON_SELECTORS);
+    if (sendButton && isVisibleElement(sendButton)) {
+      return sendButton;
+    }
     const voiceButton = findMicrophoneButton(composer);
-    return (voiceButton && isVisibleElement(voiceButton))
-      ? voiceButton
-      : findActionButton(composer, SEND_BUTTON_SELECTORS);
+    if (voiceButton && isVisibleElement(voiceButton)) {
+      return voiceButton;
+    }
+    return null;
   },
   getComposerContainer(composer: HTMLElement | null): HTMLElement | null {
     if (!composer) return null;

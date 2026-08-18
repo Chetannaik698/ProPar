@@ -24,7 +24,7 @@ export default function AccountPage() {
             </h2>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-xl bg-[#F6F7F8] p-5 gap-4">
               <div>
-                <p className="text-[15px] font-bold text-[#0B0D12]">ProPar Free tier</p>
+                <p className="text-[15px] font-bold text-[#0B0D12]">ProPaar Free tier</p>
                 <p className="text-[13px] text-[#8A8F98] mt-0.5">
                   Access to Chrome Extension and 50 prompt checks monthly.
                 </p>

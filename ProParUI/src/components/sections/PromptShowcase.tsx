@@ -35,7 +35,7 @@ export function PromptShowcase() {
           <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
         </div>
         <div className="mx-auto flex items-center gap-1.5 rounded-md bg-surface-2 px-3 py-1 text-[11px] text-muted-2">
-          <span>propar.app · live preview</span>
+          <span>propaar.netlify.app · live preview</span>
         </div>
       </div>
 
@@ -93,7 +93,7 @@ export function PromptShowcase() {
         {/* stage timeline */}
         <div className="p-6">
           <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-2">
-            ProPar is thinking
+            ProPaar is thinking
           </p>
           <ol className="space-y-3.5">
             {workflowStages.map((stage, i) => {
