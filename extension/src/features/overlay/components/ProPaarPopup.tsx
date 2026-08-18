@@ -93,6 +93,7 @@ export function ProPaarPopup({ isDark = false, isOpen, onClose, position, autoAn
             left: position.left,
             width: position.width,
             zIndex: 2147483646,
+            pointerEvents: 'auto',
           }}
           transition={{
             duration: reduceMotion ? 0 : 0.18,

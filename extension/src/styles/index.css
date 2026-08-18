@@ -29,7 +29,7 @@
 }
 
 /* Overlay Styles */
-.propar-icon {
+.propaar-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,29 +43,29 @@
   color: inherit;
   cursor: pointer;
   transition: background-color 0.15s ease;
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 
-.propar-icon:hover {
+.propaar-icon:hover {
   background: var(--propar-icon-hover, rgba(0, 0, 0, 0.06)) !important;
 }
 
-.propar-icon:focus-visible {
+.propaar-icon:focus-visible {
   outline: 2px solid #0284c7;
   outline-offset: 2px;
 }
 
-/* Dark mode styles for propar-icon */
-[data-theme="dark"] .propar-icon:hover {
+/* Dark mode styles for propaar-icon */
+[data-theme="dark"] .propaar-icon:hover {
   background: rgba(255, 255, 255, 0.12) !important;
 }
 
-.propar-popup {
+.propaar-popup {
   border-radius: 24px;
   box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
   max-height: calc(100vh - 40px);
   overflow: hidden;
-  pointer-events: auto;
+  pointer-events: auto !important;
   backface-visibility: hidden;
   contain: layout paint style;
   isolation: isolate;
@@ -73,7 +73,7 @@
   will-change: transform, opacity;
 }
 
-.propar-popup[data-theme="dark"] {
+.propaar-popup[data-theme="dark"] {
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
 }
 
@@ -84,6 +84,7 @@
   max-width: min(380px, calc(100vw - 24px));
   max-height: calc(100vh - 48px);
   overflow: hidden;
+  pointer-events: auto !important;
   background: var(--card-bg, #ffffff);
   border-radius: 24px;
   border: 1px solid rgba(15, 23, 42, 0.08);
@@ -674,26 +675,26 @@
 }
 
 /* Theme-aware colors */
-:host([data-theme='dark']) .propar-icon {
+:host([data-theme='dark']) .propaar-icon {
   color: white;
 }
 
-:host([data-theme='dark']) .propar-icon:hover {
+:host([data-theme='dark']) .propaar-icon:hover {
   background: rgba(255, 255, 255, 0.1) !important;
 }
 
-.propar-popup[data-theme='dark'] {
+.propaar-popup[data-theme='dark'] {
   background: #2d2d2d;
   border: 1px solid #404040;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-:host(:not([data-theme='dark'])) .propar-icon {
+:host(:not([data-theme='dark'])) .propaar-icon {
   color: black;
 }
 
-.propar-popup[data-theme='light'],
-.propar-popup:not([data-theme='dark']) {
+.propaar-popup[data-theme='light'],
+.propaar-popup:not([data-theme='dark']) {
   background: white;
   border: 1px solid #e5e5e5;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);

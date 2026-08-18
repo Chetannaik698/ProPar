@@ -28,6 +28,12 @@ function mount(): void {
   const globalStyle = document.createElement('style');
   globalStyle.id = 'propaar-extension-global-styles';
   globalStyle.textContent = `
+    .propaar-popup,
+    .analysis-shell,
+    .analysis-shell-body,
+    .propaar-icon {
+      pointer-events: auto !important;
+    }
     .propaar-icon {
       background: transparent !important;
       border: none !important;

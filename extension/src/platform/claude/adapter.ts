@@ -29,6 +29,10 @@ function collectButtons(scope: ParentNode, selectors: readonly string[]): HTMLEl
 function pickBottomRightButton(buttons: HTMLElement[]): HTMLElement | null {
   return buttons
     .filter(isVisibleElement)
+    .filter((button) => {
+      const label = (button.getAttribute('aria-label') || button.getAttribute('title') || '').toLowerCase();
+      return !label.includes('mic') && !label.includes('voice') && !label.includes('audio') && !label.includes('speech') && !label.includes('dictat');
+    })
     .map((button) => ({ button, rect: button.getBoundingClientRect() }))
     .sort((a, b) => b.rect.top - a.rect.top || b.rect.left - a.rect.left)[0]?.button ?? null;
 }

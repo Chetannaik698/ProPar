@@ -354,7 +354,7 @@ export class AnchorPositionManager {
           this.hostElement.style.left = '';
         }
 
-        const marginX = adapter.id === 'gemini' ? '6px' : '8px';
+        const marginX = adapter.id === 'gemini' || adapter.id === 'claude' ? '6px' : '8px';
         if (this.hostElement.style.marginLeft !== marginX) {
           this.hostElement.style.marginLeft = marginX;
         }
