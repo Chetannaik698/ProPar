@@ -41,6 +41,7 @@ export function ProPaarExtension() {
   const [isDark, setIsDark] = useState(false);
   const [platform, setPlatform] = useState<ActivePlatformAdapter>(() => getActivePlatformAdapter());
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
+  const [hasPromptText, setHasPromptText] = useState(false);
 
   useEffect(() => {
     const manager = overlay.current;
@@ -52,6 +53,18 @@ export function ProPaarExtension() {
       setPortalElement((previous) => (previous === portal ? previous : portal));
       const iconPos = manager.getIconPosition();
       setIconPosition((previous) => (isSameIconPosition(previous, iconPos) ? previous : iconPos));
+
+      const activePlatform = getActivePlatformAdapter();
+      setPlatform((previous) => (previous.id === activePlatform.id ? previous : activePlatform));
+      const nextHasPromptText = activePlatform.readComposer().trim().length > 0;
+      setHasPromptText((previous) => (previous === nextHasPromptText ? previous : nextHasPromptText));
+
+      if (!nextHasPromptText) {
+        setIsPopupOpen(false);
+        setAutoAnalyze(false);
+        setPopupPosition(null);
+        popupHeightRef.current = 0;
+      }
     };
 
     updatePositions();
@@ -60,12 +73,20 @@ export function ProPaarExtension() {
       updatePositions();
       const nextIsDark = manager.getThemeState().isDark;
       setIsDark((previous) => (previous === nextIsDark ? previous : nextIsDark));
-      const activePlatform = getActivePlatformAdapter();
-      setPlatform((previous) => (previous.id === activePlatform.id ? previous : activePlatform));
     });
 
     const handleMessage = (msg: unknown) => {
       if (typeof msg === 'object' && msg !== null && (msg as { type?: string }).type === 'PROPAR_TOGGLE_POPUP') {
+        const activePlatform = getActivePlatformAdapter();
+        const promptExists = activePlatform.readComposer().trim().length > 0;
+        setHasPromptText(promptExists);
+
+        if (!promptExists) {
+          setIsPopupOpen(false);
+          setAutoAnalyze(false);
+          return;
+        }
+
         setIsPopupOpen((prev) => !prev);
         setAutoAnalyze(true);
       }
@@ -110,20 +131,29 @@ export function ProPaarExtension() {
   }, [iconPosition, isPopupOpen]);
 
   const handleIconClick = () => {
-    if (!iconPosition) return;
+    if (!iconPosition || !hasPromptText) return;
+
+    const activePlatform = getActivePlatformAdapter();
+    const promptLength = activePlatform.readComposer().trim().length;
+    setPlatform(activePlatform);
+    setHasPromptText(promptLength > 0);
+
+    if (promptLength === 0) {
+      setIsPopupOpen(false);
+      setAutoAnalyze(false);
+      popupHeightRef.current = 0;
+      return;
+    }
+
     if (!isPopupOpen) {
-        const estimatedPopupHeight = Math.min(window.innerHeight * 0.8, 520);
-        popupHeightRef.current = estimatedPopupHeight;
-        const popupPos = overlay.current.getPopupPosition(iconPosition.top, iconPosition.left, estimatedPopupHeight);
-        setPopupPosition((previous) => (isSamePopupPosition(previous, popupPos) ? previous : popupPos));
-        setIsPopupOpen(true);
-        const activePlatform = getActivePlatformAdapter();
-        setPlatform(activePlatform);
-        const promptLength = activePlatform.readComposer().length;
-        console.debug('[ProPaar] Review icon clicked', { platform: activePlatform.id, promptLength });
-        const promptExists = promptLength > 0;
-        setAutoAnalyze(promptExists);
-        return;
+      const estimatedPopupHeight = Math.min(window.innerHeight * 0.8, 520);
+      popupHeightRef.current = estimatedPopupHeight;
+      const popupPos = overlay.current.getPopupPosition(iconPosition.top, iconPosition.left, estimatedPopupHeight);
+      setPopupPosition((previous) => (isSamePopupPosition(previous, popupPos) ? previous : popupPos));
+      setIsPopupOpen(true);
+      console.debug('[ProPaar] Review icon clicked', { platform: activePlatform.id, promptLength });
+      setAutoAnalyze(true);
+      return;
     }
 
     setIsPopupOpen(false);
@@ -146,7 +176,7 @@ export function ProPaarExtension() {
       {createPortal(
         <ProPaarIcon
           isDark={isDark}
-          isVisible
+          isVisible={hasPromptText}
           onClick={handleIconClick}
           position={iconPosition}
         />,

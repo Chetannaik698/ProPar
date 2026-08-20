@@ -47,7 +47,7 @@ export function getPlatformContextAdapter(platformName: string): PlatformContext
   );
 }
 
-export const activePlatformAdapters = [chatGptAdapter, geminiAdapter, claudeAdapter, linkedinAdapter, gmailAdapter, perplexityAdapter] satisfies ActivePlatformAdapter[];
+export const activePlatformAdapters = [chatGptAdapter, geminiAdapter, claudeAdapter, gmailAdapter] satisfies ActivePlatformAdapter[];
 export const platformDetector = new PlatformDetector(activePlatformAdapters);
 
 export function getActivePlatformAdapter(location: Location = window.location): ActivePlatformAdapter {

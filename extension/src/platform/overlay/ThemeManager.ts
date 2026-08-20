@@ -27,8 +27,15 @@ export class ThemeManager {
     const htmlElement = document.documentElement;
     this.mutationObserver.observe(htmlElement, {
       attributes: true,
-      attributeFilter: ['data-theme', 'class'],
+      attributeFilter: ['data-theme', 'data-mode', 'class', 'style'],
     });
+
+    if (document.body) {
+      this.mutationObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['data-theme', 'data-mode', 'class', 'style'],
+      });
+    }
 
     return () => {
       this.mutationObserver?.disconnect();
@@ -51,44 +58,47 @@ export class ThemeManager {
   }
 
   private detectTheme(): Theme {
-    // Gmail-specific background color theme detection
-    if (window.location.hostname === 'mail.google.com' || window.location.hostname.endsWith('.mail.google.com')) {
-      const bodyBg = window.getComputedStyle(document.body).backgroundColor;
-      if (bodyBg && bodyBg !== 'transparent' && bodyBg !== 'rgba(0, 0, 0, 0)') {
-        const match = bodyBg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    const html = document.documentElement;
+    const body = document.body;
+
+    // Check data-theme or data-mode attributes on html or body
+    const dataTheme =
+      html.getAttribute('data-theme') ||
+      body?.getAttribute('data-theme') ||
+      html.getAttribute('data-mode') ||
+      body?.getAttribute('data-mode');
+
+    if (dataTheme === 'dark' || dataTheme === 'light') {
+      return dataTheme;
+    }
+
+    // Check class names on html, body, or active theme roots
+    const classListStr = `${html.className} ${body?.className || ''}`.toLowerCase();
+    if (classListStr.includes('dark') || classListStr.includes('theme-dark')) {
+      return 'dark';
+    }
+    if (classListStr.includes('light') || classListStr.includes('theme-light')) {
+      return 'light';
+    }
+
+    if (document.querySelector('.dark, [data-mode="dark"], [data-theme="dark"]')) {
+      return 'dark';
+    }
+
+    // Computed background color brightness detection (works for Claude, ChatGPT, Gemini, Gmail, Perplexity, LinkedIn)
+    const targetElement = body || html;
+    if (targetElement) {
+      const bg = window.getComputedStyle(targetElement).backgroundColor;
+      if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
+        const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
         if (match) {
           const r = parseInt(match[1], 10);
           const g = parseInt(match[2], 10);
           const b = parseInt(match[3], 10);
           const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-          return brightness < 128 ? 'dark' : 'light';
+          return brightness < 140 ? 'dark' : 'light';
         }
       }
-    }
-
-    const html = document.documentElement;
-
-    // Check for data-theme attribute
-    const dataTheme = html.getAttribute('data-theme');
-    if (dataTheme === 'dark' || dataTheme === 'light') {
-      return dataTheme;
-    }
-
-    // Check for class-based theme
-    const classList = html.classList;
-    if (classList.contains('dark')) {
-      return 'dark';
-    }
-    if (classList.contains('light')) {
-      return 'light';
-    }
-
-    // Check for ChatGPT-specific theme classes
-    if (classList.contains('theme-dark')) {
-      return 'dark';
-    }
-    if (classList.contains('theme-light')) {
-      return 'light';
     }
 
     // Fallback to system preference

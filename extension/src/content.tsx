@@ -47,7 +47,7 @@ function mount(): void {
       background: rgba(255, 255, 255, 0.12) !important;
     }
 
-    /* Gemini-specific overrides scoped to the relative flex host */
+    /* Inline flex anchor host styles for single horizontal row alignment */
     [data-propaar-anchor-host] {
       display: inline-flex !important;
       align-items: center !important;
@@ -55,7 +55,10 @@ function mount(): void {
       width: 36px !important;
       height: 36px !important;
       flex: 0 0 auto !important;
+      flex-shrink: 0 !important;
       position: relative !important;
+      top: 0 !important;
+      left: 0 !important;
       vertical-align: middle !important;
       align-self: center !important;
       pointer-events: auto !important;
@@ -76,21 +79,18 @@ function mount(): void {
       margin: 0 !important;
       box-shadow: none !important;
       outline: none !important;
-      transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease !important;
     }
     [data-propaar-anchor-host] .propaar-icon:hover {
-      background: rgba(31, 31, 31, 0.08) !important;
-    }
-    html[data-theme="dark"] [data-propaar-anchor-host] .propaar-icon:hover,
-    html.dark [data-propaar-anchor-host] .propaar-icon:hover {
-      background: rgba(227, 227, 227, 0.08) !important;
+      background: rgba(125, 125, 125, 0.18) !important;
     }
     [data-propaar-anchor-host] .propaar-icon img {
-      width: 19px !important;
-      height: 19px !important;
-      max-width: 19px !important;
-      max-height: 19px !important;
+      width: 20px !important;
+      height: 20px !important;
+      max-width: 20px !important;
+      max-height: 20px !important;
       display: block !important;
+      object-fit: contain !important;
     }
     [data-propaar-anchor-host] .propaar-icon:focus-visible {
       outline: 2px solid #0b57d0 !important;

@@ -177,6 +177,8 @@ export class AnchorPositionManager {
         :host {
           all: initial;
           display: inline-flex;
+          align-items: center;
+          justify-content: center;
           width: 36px;
           height: 36px;
         }
@@ -205,9 +207,10 @@ export class AnchorPositionManager {
           box-shadow: none !important;
           outline: none !important;
           pointer-events: auto !important;
+          transition: background-color 0.15s ease, transform 0.15s ease !important;
         }
         .propaar-icon:hover {
-          background: rgba(0, 0, 0, 0.06) !important;
+          background: rgba(125, 125, 125, 0.18) !important;
         }
         .propaar-icon:focus-visible {
           outline: 2px solid #0b57d0 !important;
@@ -216,10 +219,11 @@ export class AnchorPositionManager {
         .propaar-icon img,
         .propaar-icon svg {
           display: block !important;
-          width: 18px !important;
-          height: 18px !important;
-          max-width: 18px !important;
-          max-height: 18px !important;
+          width: 20px !important;
+          height: 20px !important;
+          max-width: 20px !important;
+          max-height: 20px !important;
+          object-fit: contain !important;
         }
       `;
       this.portalElement = document.createElement('div');
@@ -227,11 +231,17 @@ export class AnchorPositionManager {
       shadowRoot.append(style, this.portalElement);
     }
 
-    this.hostElement.style.position = 'relative';
+    // Unwrap any leftover stack wrappers if present
+    const existingStack = this.container.querySelector('[data-propaar-send-stack]');
+    if (existingStack && existingStack.parentElement) {
+      while (existingStack.firstChild) {
+        existingStack.parentElement.insertBefore(existingStack.firstChild, existingStack);
+      }
+      existingStack.parentElement.removeChild(existingStack);
+    }
 
-    this.hostElement.style.marginLeft = '';
-    this.hostElement.style.marginRight = '';
-    this.hostElement.style.alignSelf = '';
+    this.hostElement.style.setProperty('position', 'relative');
+    this.hostElement.style.setProperty('align-self', 'center');
 
     // Insert as inline sibling directly before the anchor button
     if (this.hostElement.parentElement !== this.container || this.hostElement.nextElementSibling !== this.anchor) {
@@ -342,9 +352,24 @@ export class AnchorPositionManager {
 
     if (this.anchor && this.container && this.hostElement) {
       const adapter = getActivePlatformAdapter();
+      const isFlowPlatform =
+        adapter.id === 'chatgpt' ||
+        adapter.id === 'gemini' ||
+        adapter.id === 'claude' ||
+        adapter.id === 'linkedin' ||
+        adapter.id === 'perplexity' ||
+        adapter.id === 'gmail';
 
-      if (adapter.id === 'chatgpt' || adapter.id === 'gemini' || adapter.id === 'claude' || adapter.id === 'linkedin') {
-        // Relative inline-flex layout for ChatGPT, Gemini, Claude, and LinkedIn to sit naturally in flow
+      if (isFlowPlatform) {
+        const composerText = adapter.readComposer().trim();
+        const hasText = composerText.length > 0;
+
+        if (!hasText) {
+          this.hostElement.style.setProperty('display', 'none', 'important');
+          return;
+        }
+
+        // Relative inline-flex layout for all flow platforms to sit naturally in toolbar
         if (this.hostElement.style.position !== 'relative') {
           this.hostElement.style.position = 'relative';
         }
@@ -355,30 +380,54 @@ export class AnchorPositionManager {
           this.hostElement.style.left = '';
         }
 
-        const marginX = adapter.id === 'gemini' ? '6px' : '8px';
-        if (this.hostElement.style.marginLeft !== marginX) {
-          this.hostElement.style.marginLeft = marginX;
-        }
-        if (this.hostElement.style.marginRight !== marginX) {
-          this.hostElement.style.marginRight = marginX;
+        if (adapter.id === 'claude') {
+          if (this.container) {
+            this.container.style.setProperty('display', 'flex', 'important');
+            this.container.style.setProperty('align-items', 'center', 'important');
+            this.container.style.setProperty('gap', '10px', 'important');
+            this.container.style.removeProperty('justify-content');
+          }
+          this.hostElement.style.setProperty('margin-left', '6px', 'important');
+          this.hostElement.style.setProperty('margin-right', '0', 'important');
+          this.hostElement.style.setProperty('align-self', 'center', 'important');
+          this.hostElement.style.setProperty('flex-shrink', '0', 'important');
+          this.hostElement.style.setProperty('display', 'inline-flex', 'important');
+
+          const composerCandidates = adapter.getComposerCandidates();
+          const secondary = adapter.getSecondaryActionButton?.(composerCandidates[0] ?? null);
+          if (secondary) {
+            secondary.style.setProperty('margin', '0', 'important');
+            secondary.style.setProperty('align-self', 'center', 'important');
+          }
+          if (this.anchor) {
+            this.anchor.style.setProperty('margin', '0', 'important');
+            this.anchor.style.setProperty('align-self', 'center', 'important');
+          }
+        } else {
+          let marginLeft = '6px';
+          let marginRight = '6px';
+          if (adapter.id === 'gemini') {
+            marginLeft = '6px';
+            marginRight = '6px';
+          } else if (adapter.id === 'chatgpt' || adapter.id === 'perplexity') {
+            marginLeft = '4px';
+            marginRight = '4px';
+          } else if (adapter.id === 'linkedin' || adapter.id === 'gmail') {
+            marginLeft = '6px';
+            marginRight = '6px';
+          }
+
+          this.hostElement.style.setProperty('margin-left', marginLeft, 'important');
+          this.hostElement.style.setProperty('margin-right', marginRight, 'important');
+
+          // Ensure hostElement stays perfectly aligned in serial flow and stays visible
+          this.hostElement.style.setProperty('align-self', 'center');
+          this.hostElement.style.setProperty('flex-shrink', '0');
+          this.hostElement.style.setProperty('display', 'inline-flex', 'important');
         }
       }
 
-      // Only show host element when prompt text is non-empty
-      const composerText = adapter.readComposer().trim();
-      const hasText = composerText.length > 0;
-      if (!hasText) {
-        if (this.hostElement.style.display !== 'none') {
-          this.hostElement.style.display = 'none';
-        }
-        return;
-      } else {
-        if (this.hostElement.style.display !== 'inline-flex') {
-          this.hostElement.style.display = 'inline-flex';
-        }
-      }
-
-      if (adapter.id === 'chatgpt' || adapter.id === 'gemini' || adapter.id === 'claude' || adapter.id === 'linkedin') {
+      if (isFlowPlatform) {
         return;
       }
     }

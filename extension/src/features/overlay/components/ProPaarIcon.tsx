@@ -28,11 +28,14 @@ export function ProPaarIcon({ isVisible, isDark = false, onClick, position }: Pr
       exit={{ opacity: 0, scale: 0.98 }}
       onClick={onClick}
       style={{
-        position: 'absolute',
+        position: 'relative',
         top: 0,
         left: 0,
         width: 36,
         height: 36,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         zIndex: 2147483647,
       }}
       transition={{
@@ -40,10 +43,10 @@ export function ProPaarIcon({ isVisible, isDark = false, onClick, position }: Pr
         ease: 'easeOut',
       }}
       type="button"
-      whileHover={reduceMotion ? undefined : { scale: 1 }}
+      whileHover={reduceMotion ? undefined : { scale: 1.05 }}
       whileTap={reduceMotion ? undefined : { scale: 0.95 }}
     >
-      <ProPaarMark className="h-[18px] w-[18px]" isDark={isDark} />
+      <ProPaarMark className="h-[20px] w-[20px]" isDark={isDark} />
     </motion.button>
   );
 }
