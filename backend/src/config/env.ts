@@ -44,16 +44,16 @@ const envSchema = z.object({
   OPENROUTER_MODEL: z.string().default('openai/gpt-4o-mini'),
   OPENROUTER_FALLBACK_MODELS: z
     .string()
-    .default('google/gemini-2.5-flash,google/gemini-2.0-flash-001,meta-llama/llama-3.3-70b-instruct'),
+    .default('google/gemini-2.0-flash-001,meta-llama/llama-3.3-70b-instruct'),
 
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
+  GEMINI_MODEL: z.string().default('gemini-1.5-flash'),
 
   GROQ_API_KEY: z.string().optional(),
-  GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
+  GROQ_MODEL: z.string().default('llama3-70b-8192'),
 
-  PRIMARY_AI_PROVIDER: z.enum(['gemini', 'groq', 'openrouter']).default('gemini'),
-  FALLBACK_AI_PROVIDER: z.enum(['groq', 'gemini', 'openrouter', 'none']).default('groq'),
+  PRIMARY_AI_PROVIDER: z.enum(['gemini', 'groq', 'openrouter']).default('openrouter'),
+  FALLBACK_AI_PROVIDER: z.enum(['groq', 'gemini', 'openrouter', 'none']).default('openrouter'),
 
   AI_REQUEST_TIMEOUT_MS: z
     .string()

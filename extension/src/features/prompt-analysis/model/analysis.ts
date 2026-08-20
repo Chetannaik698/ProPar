@@ -17,4 +17,4 @@ export const prototypeAnalysis = {
   suggestions: ['Add target audience', 'Improve clarity', 'Define business goal'],
 } as const;
 
-export type AnalysisPhase = 'idle' | 'analyzing' | 'clarifying' | 'complete';
+export type AnalysisPhase = 'idle' | 'analyzing' | 'clarifying' | 'complete' | 'error';
