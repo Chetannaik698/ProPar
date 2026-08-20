@@ -35,6 +35,16 @@ export function createAiProvider(): AiProvider {
     providers.push(new OpenRouterProvider());
   }
 
+  // Include Gemini as fallback if configured and not already included
+  if (aiConfig.gemini.apiKey && !providers.some((p) => p.name === 'gemini')) {
+    providers.push(new GeminiProvider());
+  }
+
+  // Include Groq as fallback if configured and not already included
+  if (aiConfig.groq.apiKey && !providers.some((p) => p.name === 'groq')) {
+    providers.push(new GroqProvider());
+  }
+
   if (providers.length === 0) {
     // Default to Gemini if no providers are selected
     providers.push(new GeminiProvider());

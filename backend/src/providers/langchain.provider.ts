@@ -54,7 +54,8 @@ export class LangChainProvider implements AiProvider {
         },
       });
 
-    const primaryModel = createChatModel(candidates[0]);
+    const firstCandidate = candidates[0] ?? this.model;
+    const primaryModel = createChatModel(firstCandidate);
     const fallbackModels = candidates.slice(1).map((m) => createChatModel(m));
 
     const runner = fallbackModels.length > 0

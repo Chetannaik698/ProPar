@@ -78,6 +78,9 @@ export class GroqProvider implements AiProvider {
         if (response.status === 401 || response.status === 403) {
           throw new AiProviderError('Invalid Groq API key. Please check your credentials.', 'INVALID_API_KEY', 401);
         }
+        if (response.status === 404 || response.status === 410 || errorText.includes('model_not_found')) {
+          throw new AiProviderError(`Groq model unavailable (${response.status}): ${errorText}`, 'MODEL_UNAVAILABLE', 503);
+        }
         if (response.status === 429) {
           throw new AiProviderError('Rate limited by Groq API. Please try again later.', 'RATE_LIMIT', 429);
         }

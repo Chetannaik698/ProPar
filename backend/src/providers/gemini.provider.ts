@@ -78,6 +78,9 @@ export class GeminiProvider implements AiProvider {
         if (response.status === 401 || response.status === 403) {
           throw new AiProviderError('Invalid Gemini API key. Please check your credentials.', 'INVALID_API_KEY', 401);
         }
+        if (response.status === 404 || response.status === 410 || errorText.includes('NOT_FOUND')) {
+          throw new AiProviderError(`Google Gemini model unavailable (${response.status}): ${errorText}`, 'MODEL_UNAVAILABLE', 503);
+        }
         if (response.status === 429) {
           throw new AiProviderError('Rate limited by Google Gemini API. Falling back...', 'RATE_LIMIT', 429);
         }

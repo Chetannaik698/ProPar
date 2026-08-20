@@ -134,6 +134,28 @@ export class OpenRouterProvider implements AiProvider {
         });
       }
 
+      // If failed with 402 payment required and max_tokens > 1000, retry once with reduced max_tokens
+      if (!response.ok && response.status === 402 && (requestBody['max_tokens'] as number) > 1000) {
+        console.warn('OpenRouter returned 402 Payment Required; retrying with lower max_tokens token budget', {
+          provider: this.name,
+          model,
+          originalMaxTokens: requestBody['max_tokens'],
+          reducedMaxTokens: 1200,
+        });
+        requestBody['max_tokens'] = 1200;
+        response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${aiConfig.openRouter.apiKey ?? ''}`,
+            'HTTP-Referer': 'https://propaar.netlify.app',
+            'X-Title': 'ProPaar',
+          },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
+        });
+      }
+
       if (!response.ok) {
         const errorBody = await this.readErrorBody(response);
         throw this.mapHttpError(statusToNumber(response.status), errorBody, model);
@@ -285,6 +307,19 @@ export class OpenRouterProvider implements AiProvider {
           'OpenRouter rejected the selected model or token budget for the available credits.',
           'PAYMENT_REQUIRED',
           402
+        );
+      case 400:
+        if (message.toLowerCase().includes('not a valid model') || message.toLowerCase().includes('model_not_found')) {
+          return new AiProviderError(
+            `OpenRouter model invalid (${status}): ${message}`,
+            'MODEL_UNAVAILABLE',
+            503
+          );
+        }
+        return new AiProviderError(
+          `OpenRouter error (${status}): ${message}`,
+          'PROVIDER_ERROR',
+          status
         );
       case 404:
       case 410:

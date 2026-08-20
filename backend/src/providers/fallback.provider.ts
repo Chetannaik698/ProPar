@@ -67,6 +67,7 @@ export class FallbackAiProvider implements AiProvider {
             'NETWORK_FAILURE',
             'MODEL_UNAVAILABLE',
             'PROVIDER_ERROR',
+            'PAYMENT_REQUIRED',
           ].includes(lastError.code);
 
           if (!isFallbackable) {
