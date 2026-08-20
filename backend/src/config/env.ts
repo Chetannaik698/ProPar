@@ -42,7 +42,9 @@ const envSchema = z.object({
   // AI provider configuration
   OPENROUTER_API_KEY: z.string().optional(),
   OPENROUTER_MODEL: z.string().default('openai/gpt-4o-mini'),
-  OPENROUTER_FALLBACK_MODELS: z.string().default(''),
+  OPENROUTER_FALLBACK_MODELS: z
+    .string()
+    .default('google/gemini-2.5-flash,google/gemini-2.0-flash-001,meta-llama/llama-3.3-70b-instruct'),
 
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default('gemini-2.0-flash'),

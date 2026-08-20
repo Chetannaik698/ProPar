@@ -11,39 +11,183 @@ const STEP_INTERVAL_MS = 1_500 / analysisSteps.length;
 
 function generateLocalFallbackAnalysis(prompt: string, platformName: string): Analysis {
   const engine = new ClearInstructionsEngine();
-  const report = engine.analyze(prompt);
+  const rawPrompt = prompt.trim();
+  const report = engine.analyze(rawPrompt);
 
-  const improvedPromptText = prompt.trim()
-    ? `System: Act as an expert consultant.\n\nTask: ${prompt.trim()}\n\nExecution Guidelines:\n- Provide structured, step-by-step reasoning.\n- Use clear formatting with action-oriented headers.\n- Ask clarifying questions if key details are missing.`
-    : `Please write a structured, high-impact post/prompt focusing on key insights, clear outcomes, and professional delivery.`;
+  const cleanPrompt = rawPrompt || 'Explain technical concepts clearly with structured examples';
+  const platform = platformName.toLowerCase();
+
+  // Inferred Goals
+  const primaryGoalStr = rawPrompt
+    ? `Master and execute prompt task: "${rawPrompt.slice(0, 60)}${rawPrompt.length > 60 ? '...' : ''}"`
+    : `Deliver high-impact, structured ${platformName} communication`;
+
+  // Dynamic Missing Context
+  const missingContext: MissingContextItem[] = [
+    {
+      item: 'Target Audience & Technical Depth',
+      whyItMatters: 'Determines detail level, complexity, and jargon usage',
+      expectedImpact: 'Ensures output matches recipient expertise',
+    },
+    {
+      item: 'Explicit Output Format & Deliverables',
+      whyItMatters: 'Prevents generic bullet lists or unstructured essays',
+      expectedImpact: 'Produces ready-to-use, structured output',
+    },
+    {
+      item: 'Constraints & Edge Cases',
+      whyItMatters: 'Avoids unwanted scope creep or incorrect assumptions',
+      expectedImpact: 'Focuses response strictly on relevant requirements',
+    },
+  ];
+
+  // Dynamic Hidden Assumptions
+  const hiddenAssumptions: AssumptionAnalysisItem[] = [
+    {
+      assumption: 'Implicit baseline knowledge and standard execution environment',
+      risk: 'Response might skip fundamental steps or over-explain basics',
+      detectedBecause: 'Rule evaluation detected unstated user background',
+      challengeQuestion: 'What specific skill level or environment should be assumed?',
+    },
+    {
+      assumption: 'Default formatting and concise bullet structure preferred',
+      risk: 'Output style may not match exact expectations',
+      detectedBecause: 'No explicit formatting style specified in prompt',
+    },
+  ];
+
+  // Dynamic Suggestions from Engine Issues
+  const suggestions: RecommendationItem[] = report.issues.map((issue) => ({
+    recommendation: issue.suggestedFix || `Address ${issue.title}`,
+    reason: issue.explanation || 'Refines instruction clarity and structure',
+    expectedBenefit: 'Improves response precision and alignment',
+  }));
+
+  if (suggestions.length === 0) {
+    suggestions.push(
+      {
+        recommendation: 'Specify target audience and output format constraints',
+        reason: 'Eliminates ambiguity in model response structure',
+        expectedBenefit: 'Higher relevance and immediate usability',
+      },
+      {
+        recommendation: 'Include explicit background context and success criteria',
+        reason: 'Provides clear boundaries for the AI response',
+        expectedBenefit: 'Prevents generic or off-topic responses',
+      }
+    );
+  }
+
+  // Dynamic Improved Prompt Generation based on Platform
+  let improvedPromptText = '';
+
+  if (platform.includes('claude')) {
+    improvedPromptText = `<role>
+Senior Technical Consultant & Specialist
+</role>
+
+<task>
+${cleanPrompt}
+</task>
+
+<context>
+User requested a detailed, structured response for "${cleanPrompt}".
+</context>
+
+<instructions>
+1. Provide a comprehensive, step-by-step breakdown with clear section headings.
+2. Include concrete, real-world code snippets or practical examples where applicable.
+3. Highlight key rules, scope boundaries, and common pitfalls to avoid.
+4. Conclude with a clear summary or actionable best practices checklist.
+</instructions>
+
+<output_format>
+- Executive Overview
+- Detailed Concepts & Practical Breakdown
+- Runnable Code / Concrete Examples
+- Pitfalls & Edge Cases
+- Actionable Summary
+</output_format>`;
+  } else if (platform.includes('gmail')) {
+    improvedPromptText = `[SUBJECT] Breakdown & Action Plan: ${cleanPrompt.slice(0, 50)}
+
+[GREETING] Hello,
+
+[BODY]
+I have prepared a structured overview and execution plan regarding: "${cleanPrompt}".
+
+Key Highlights & Deliverables:
+- Core Objective: Deliver clear, actionable insights tailored to your requirements.
+- Key Details: Step-by-step breakdown covering essential concepts and practical steps.
+- Recommended Next Steps: Implementation guidelines and review checkpoints.
+
+Please review the details below and let me know if you would like any adjustments.
+
+[CLOSING] Best regards,
+
+[SIGNATURE] [Your Name]`;
+  } else if (platform.includes('linkedin')) {
+    improvedPromptText = `Mastering ${cleanPrompt.slice(0, 45)}: Key Insights & Actionable Principles 🚀
+
+When approaching ${cleanPrompt.slice(0, 30)}, clarity and execution are everything.
+
+Here are the essential key takeaways:
+
+1️⃣ Core Foundation: Focus on clear principles and high-impact fundamentals.
+2️⃣ Practical Application: Translate concepts into actionable steps.
+3️⃣ Avoid Common Pitfalls: Keep structure clean and measurable.
+
+What strategies have worked best for you in this domain? Share your thoughts below! 👇
+
+#ProfessionalGrowth #TechInsights #Leadership #BestPractices`;
+  } else {
+    // Default / ChatGPT / Gemini
+    improvedPromptText = `Objective
+${cleanPrompt}
+
+Background & Context
+The user is requesting a thorough, expert-level breakdown of the specified task with high clarity and structured delivery.
+
+Requirements
+- Provide clear, step-by-step reasoning organized by descriptive headers.
+- Include practical, self-contained examples or runnable code blocks where relevant.
+- Address edge cases, common pitfalls, and key best practices.
+- Use clear formatting with concise bullet points for readability.
+
+Constraints
+- Avoid vague or generic explanations.
+- Ensure all technical terms are clearly defined.
+
+Expected Output Format
+1. Core Concepts & Overview
+2. Step-by-step Explanation & Examples
+3. Pitfalls & Best Practices Checklist
+4. Summary & Actionable Recommendations`;
+  }
+
+  const estGain = Math.max(25, Math.min(65, 100 - report.score));
 
   return {
     needsClarification: false,
-    intent: prompt.trim() ? prompt.slice(0, 80) : 'Clear, structured task execution',
+    intent: cleanPrompt.slice(0, 80),
     thinkingScore: report.score,
-    estimatedImprovement: '+45% Clarity & Impact',
+    estimatedImprovement: `+${estGain}% Clarity & Depth`,
     goalDiscovery: {
-      primaryGoal: 'Deliver high-impact, structured communication',
-      taskType: `${platformName} communication`,
+      primaryGoal: primaryGoalStr,
+      taskType: `${platformName} Task Execution`,
     },
-    hiddenAssumptions: [
-      {
-        assumption: 'Target audience and desired output format are implied',
-        risk: 'Response may lack specific context or structural alignment',
-        detectedBecause: 'Rule evaluation detected implicit context',
-      },
-    ],
+    missingContext,
+    hiddenAssumptions,
     blindSpots: report.issues.map((issue) => ({
-      title: issue.title,
-      description: issue.explanation,
-      suggestion: issue.suggestedFix,
-      impact: 'High Impact',
+      blindSpot: issue.title,
+      whyItMatters: issue.explanation,
+      consequence: issue.suggestedFix,
     })),
-    suggestions: report.recommendations.length > 0 ? report.recommendations : ['Specify explicit output format and constraints', 'Provide clear background context'],
+    suggestions,
     whatChanged: [
-      'Structured prompt role & execution guidelines',
-      'Added explicit formatting constraints',
-      'Refined clarity and goal positioning',
+      'Applied platform-specific prompt engineering structure',
+      'Added explicit requirements, constraints, and output format',
+      'Refined intent positioning and task scope boundaries',
     ],
     improvedPrompt: improvedPromptText,
   };

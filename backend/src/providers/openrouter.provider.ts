@@ -94,7 +94,19 @@ export class OpenRouterProvider implements AiProvider {
     const promptLength = request.messages.reduce((total, message) => total + message.content.length, 0);
 
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const requestBody: Record<string, unknown> = {
+        model,
+        messages: request.messages,
+        max_tokens: aiConfig.openRouter.maxCompletionTokens,
+        temperature: 0.2,
+      };
+
+      // Only pass json_object format for models known to support it, or try with fallback
+      if (model.startsWith('openai/') || model.startsWith('google/') || model.startsWith('anthropic/')) {
+        requestBody['response_format'] = { type: 'json_object' };
+      }
+
+      let response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,15 +114,25 @@ export class OpenRouterProvider implements AiProvider {
           'HTTP-Referer': 'https://propaar.netlify.app',
           'X-Title': 'ProPaar',
         },
-        body: JSON.stringify({
-          model,
-          messages: request.messages,
-          max_tokens: aiConfig.openRouter.maxCompletionTokens,
-          temperature: 0.2,
-          response_format: { type: 'json_object' },
-        }),
+        body: JSON.stringify(requestBody),
         signal: controller.signal,
       });
+
+      // If failed with 400 bad request and response_format was included, retry without response_format
+      if (!response.ok && response.status === 400 && requestBody['response_format']) {
+        delete requestBody['response_format'];
+        response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${aiConfig.openRouter.apiKey ?? ''}`,
+            'HTTP-Referer': 'https://propaar.netlify.app',
+            'X-Title': 'ProPaar',
+          },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
+        });
+      }
 
       if (!response.ok) {
         const errorBody = await this.readErrorBody(response);
@@ -297,7 +319,8 @@ export class OpenRouterProvider implements AiProvider {
       error.code === 'PAYMENT_REQUIRED' ||
       error.code === 'MODEL_UNAVAILABLE' ||
       error.code === 'PROVIDER_UNAVAILABLE' ||
-      error.code === 'NETWORK_FAILURE'
+      error.code === 'NETWORK_FAILURE' ||
+      error.code === 'PROVIDER_ERROR'
     );
   }
 }
