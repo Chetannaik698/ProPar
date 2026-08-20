@@ -27,7 +27,7 @@ export class AnalysisServiceError extends Error {
 }
 
 export class AnalysisService {
-  private readonly maxAttempts = 1;
+  private readonly maxAttempts = 2;
 
   constructor(private readonly provider: AiProvider) {}
 
@@ -191,14 +191,13 @@ export class AnalysisService {
 
   private extractJson(content: string): string {
     const jsonBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-    if (jsonBlockMatch?.[1]) {
-      return jsonBlockMatch[1].trim();
-    }
+    const candidate = jsonBlockMatch?.[1] ? jsonBlockMatch[1].trim() : content.trim();
 
-    const balancedJson = this.extractFirstBalancedJsonObject(content);
+    const balancedJson =
+      this.extractFirstBalancedJsonObject(candidate) ?? this.extractFirstBalancedJsonObject(content);
     if (balancedJson) return balancedJson;
 
-    return content.trim();
+    return candidate;
   }
 
   private extractFirstBalancedJsonObject(content: string): string | null {
