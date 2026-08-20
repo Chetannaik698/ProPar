@@ -7,6 +7,7 @@ import {
   GoalDiscoveryCard,
   ImprovedPromptCard,
   MissingContextCard,
+  PreFlightSimulationCard,
   SuggestionCard,
   ThinkingCard,
   WhatChangedCard,
@@ -309,6 +310,7 @@ export function ResultsView({ analysis, onClose, platform, isOriginalPromptEmpty
               </div>
             )}
 
+            <PreFlightSimulationCard preFlight={analysis.preFlightSimulation} />
             <GoalDiscoveryCard fallbackIntent={analysis.intent} goalDiscovery={analysis.goalDiscovery} labels={platform.labels} />
             <ThinkingCard hiddenAssumptions={analysis.hiddenAssumptions} labels={platform.labels} thinkingGap={analysis.thinkingGap} />
             <ExpertConsiderationsCard items={analysis.expertConsiderations} labels={platform.labels} />

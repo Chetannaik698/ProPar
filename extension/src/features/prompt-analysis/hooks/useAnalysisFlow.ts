@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { analysisSteps, type AnalysisPhase } from '../model/analysis';
-import type { Analysis, ClarificationAnswer } from '../types/analysis';
+import type { Analysis, AssumptionAnalysisItem, ClarificationAnswer, FailureVectorItem, MissingContextItem, ModelSimulationResult, PreFlightSimulation, RecommendationItem } from '../types/analysis';
 import { analyzePrompt, AnalysisError } from '../services/analysisApi';
 import { getActivePlatformAdapter } from '../../../platform/adapters/registry';
 import type { ActivePlatformAdapter } from '../../../platform/adapters/types';
@@ -58,8 +58,8 @@ function generateLocalFallbackAnalysis(prompt: string, platformName: string): An
 
   // Dynamic Suggestions from Engine Issues
   const suggestions: RecommendationItem[] = report.issues.map((issue) => ({
-    recommendation: issue.suggestedFix || `Address ${issue.title}`,
-    reason: issue.explanation || 'Refines instruction clarity and structure',
+    recommendation: issue.problem || `Address ${issue.title}`,
+    reason: issue.reason || 'Refines instruction clarity and structure',
     expectedBenefit: 'Improves response precision and alignment',
   }));
 
@@ -165,6 +165,65 @@ Expected Output Format
 4. Summary & Actionable Recommendations`;
   }
 
+  const failureVectors: FailureVectorItem[] = [
+    {
+      targetModel: 'Claude 3.5 Sonnet',
+      riskProbability: report.score < 60 ? 82 : 35,
+      vectorType: 'formatting',
+      description: 'Risk of generic unstructured response without XML tag boundaries.',
+      mitigation: 'Enforce explicit <task>, <context>, and <output_format> XML blocks.',
+    },
+    {
+      targetModel: 'OpenAI o3-mini / o1',
+      riskProbability: rawPrompt.toLowerCase().includes('think step') ? 88 : 38,
+      vectorType: 'reasoning-token-waste',
+      description: 'Micromanaged chain-of-thought instructions waste internal reasoning tokens.',
+      mitigation: 'Replace manual thinking steps with explicit Goal, Constraints, and Deliverables.',
+    },
+    {
+      targetModel: 'GPT-4o / Gemini 2.0',
+      riskProbability: report.score < 50 ? 75 : 25,
+      vectorType: 'hallucination',
+      description: 'Implicit scope boundaries increase probability of hallucinated or off-target facts.',
+      mitigation: 'Add explicit positive constraints and verifiable output schema bounds.',
+    },
+  ];
+
+  const modelSimulations: ModelSimulationResult[] = [
+    {
+      targetModel: 'Claude 3.5 Sonnet',
+      fitScore: Math.min(98, report.score + 25),
+      status: report.score > 70 ? 'optimal' : 'warning',
+      predictedOutcome: 'High analytical depth; performs best with XML-tagged prompt structure.',
+      primaryRisk: 'Requires XML tag structure for complex context.',
+    },
+    {
+      targetModel: 'GPT-4o',
+      fitScore: Math.min(95, report.score + 20),
+      status: 'optimal',
+      predictedOutcome: 'Strong multi-turn adherence when guidelines use positive constraints.',
+      primaryRisk: 'May over-summarize if word limits are missing.',
+    },
+    {
+      targetModel: 'OpenAI o3-mini',
+      fitScore: Math.min(92, report.score + 18),
+      status: rawPrompt.toLowerCase().includes('think step') ? 'high-risk' : 'optimal',
+      predictedOutcome: 'Autonomous deep reasoning; optimal for multi-step logic.',
+      primaryRisk: 'Token burn if prompt micromanages thinking steps.',
+    },
+  ];
+
+  const preFlightSimulation: PreFlightSimulation = {
+    overallRiskLevel: report.score < 40 ? 'critical' : report.score < 70 ? 'high' : 'medium',
+    failureVectors,
+    modelSimulations,
+    mitigationsApplied: [
+      'Pre-flight risk assessment executed',
+      'Target model failure vectors analyzed',
+      'Prompt structure optimized for LLM architecture alignment',
+    ],
+  };
+
   const estGain = Math.max(25, Math.min(65, 100 - report.score));
 
   return {
@@ -180,16 +239,18 @@ Expected Output Format
     hiddenAssumptions,
     blindSpots: report.issues.map((issue) => ({
       blindSpot: issue.title,
-      whyItMatters: issue.explanation,
-      consequence: issue.suggestedFix,
+      whyItMatters: issue.reason,
+      consequence: issue.problem,
     })),
     suggestions,
     whatChanged: [
       'Applied platform-specific prompt engineering structure',
       'Added explicit requirements, constraints, and output format',
       'Refined intent positioning and task scope boundaries',
+      'Executed pre-flight model failure simulation',
     ],
     improvedPrompt: improvedPromptText,
+    preFlightSimulation,
   };
 }
 

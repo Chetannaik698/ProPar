@@ -400,6 +400,64 @@ export function detectOpenAiPattern(text: string): { name: string; tag: string }
   return { name: 'Pattern 1: Structured Developer Message', tag: 'OpenAI Prompt Standard' };
 }
 
+export function PreFlightSimulationCard({ preFlight }: { preFlight?: any }) {
+  if (!preFlight || !preFlight.failureVectors?.length) return null;
+
+  const riskColors: Record<string, { bg: string; border: string; text: string }> = {
+    low: { bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.25)', text: '#059669' },
+    medium: { bg: 'rgba(245, 158, 11, 0.1)', border: 'rgba(245, 158, 11, 0.25)', text: '#d97706' },
+    high: { bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.25)', text: '#dc2626' },
+    critical: { bg: 'rgba(220, 38, 38, 0.15)', border: 'rgba(220, 38, 38, 0.4)', text: '#b91c1c' },
+  };
+
+  const currentRisk = riskColors[preFlight.overallRiskLevel] || riskColors.medium;
+
+  return (
+    <section className="result-card preflight-sim-card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+        <div>
+          <p className="card-label">Pre-Flight LLM Failure Predictor</p>
+          <p className="card-caption">Simulated risk vectors across target AI model architectures</p>
+        </div>
+        <span style={{
+          padding: '4px 10px',
+          borderRadius: '12px',
+          fontSize: '11px',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          background: currentRisk.bg,
+          border: `1px solid ${currentRisk.border}`,
+          color: currentRisk.text,
+        }}>
+          {preFlight.overallRiskLevel} RISK
+        </span>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+        {preFlight.failureVectors.map((vector: any, idx: number) => (
+          <div key={idx} style={{
+            padding: '10px 12px',
+            borderRadius: '8px',
+            background: 'var(--propaar-card-bg, rgba(255, 255, 255, 0.04))',
+            border: '1px solid var(--propaar-card-border, rgba(255, 255, 255, 0.08))',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <span style={{ fontWeight: 600, fontSize: '13px' }}>{vector.targetModel}</span>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: vector.riskProbability > 70 ? '#ef4444' : '#f59e0b' }}>
+                {vector.riskProbability}% Risk
+              </span>
+            </div>
+            <p style={{ fontSize: '12px', margin: '2px 0 4px 0', opacity: 0.85 }}>{vector.description}</p>
+            <div style={{ fontSize: '11px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span>🛡️ Pre-Flight Shield:</span> <span>{vector.mitigation}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function ImprovedPromptCard({ formattedPrompt, copyState, replaceState, onCopy, onReplace, labels }: { formattedPrompt: FormattedPrompt; copyState: CopyState; replaceState: 'idle' | 'ready' | 'success'; onCopy: () => Promise<void>; onReplace: () => void; labels: PlatformLabels }) {
   const platform = getActivePlatformAdapter();
   const isChatGPT = platform.id === 'chatgpt';

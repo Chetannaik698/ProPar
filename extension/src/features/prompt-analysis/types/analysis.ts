@@ -68,6 +68,29 @@ export interface BlindSpotItem {
   consequence?: string;
 }
 
+export interface FailureVectorItem {
+  targetModel: string;
+  riskProbability: number;
+  vectorType: 'hallucination' | 'formatting' | 'reasoning-token-waste' | 'engagement-drop' | 'ambiguity';
+  description: string;
+  mitigation: string;
+}
+
+export interface ModelSimulationResult {
+  targetModel: string;
+  fitScore: number;
+  status: 'optimal' | 'warning' | 'high-risk';
+  predictedOutcome: string;
+  primaryRisk: string;
+}
+
+export interface PreFlightSimulation {
+  overallRiskLevel: 'low' | 'medium' | 'high' | 'critical';
+  failureVectors: FailureVectorItem[];
+  modelSimulations: ModelSimulationResult[];
+  mitigationsApplied: string[];
+}
+
 export interface Analysis {
   goalDiscovery?: GoalDiscovery;
   intent: string;
@@ -83,6 +106,7 @@ export interface Analysis {
   improvedPrompt?: string;
   needsClarification?: boolean;
   clarificationQuestions?: ClarificationQuestion[];
+  preFlightSimulation?: PreFlightSimulation;
 }
 
 export interface Meta {

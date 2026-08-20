@@ -30,12 +30,13 @@ export class RetrievalService {
     const searchQuery = searchContextParts.join('\n');
     const queryEmbedding = await this.embeddingService.embedText(searchQuery);
 
-    // Search for documents specific to active platform AND general documents
+    // Search for documents specific to active platform, general documents, and top global matches
     const platformResults = await this.vectorStore.search(queryEmbedding, topK, { platform: platform.toLowerCase() });
     const generalResults = await this.vectorStore.search(queryEmbedding, topK, { platform: 'general' });
+    const globalResults = await this.vectorStore.search(queryEmbedding, topK);
 
     // Combine and sort by similarity score
-    const combinedResults = [...platformResults, ...generalResults];
+    const combinedResults = [...platformResults, ...generalResults, ...globalResults];
     combinedResults.sort((a, b) => b.score - a.score);
 
     // Deduplicate by document id
