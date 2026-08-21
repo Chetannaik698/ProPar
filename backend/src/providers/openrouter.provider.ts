@@ -6,6 +6,7 @@ import {
   type AiProvider,
   type AiUsage,
 } from './ai-provider.types.js';
+import { isQuotaOrLimitMessage, quotaOrLimitErrorCode } from './provider-error.utils.js';
 
 interface OpenRouterUsage {
   prompt_tokens?: number;
@@ -290,15 +291,27 @@ export class OpenRouterProvider implements AiProvider {
 
     switch (status) {
       case 401:
-      case 403:
         return new AiProviderError(
           'Invalid OpenRouter API key. Please check your credentials.',
           'INVALID_API_KEY',
           401
         );
+      case 403:
+        if (isQuotaOrLimitMessage(message)) {
+          return new AiProviderError(
+            `OpenRouter quota or limit reached (${status}): ${message}`,
+            quotaOrLimitErrorCode(message),
+            status
+          );
+        }
+        return new AiProviderError(
+          `OpenRouter rejected the request (${status}): ${message}`,
+          'PROVIDER_ERROR',
+          403
+        );
       case 429:
         return new AiProviderError(
-          'Rate limited by OpenRouter. Please try again later.',
+          `Rate limited by OpenRouter (${status}): ${message}`,
           'RATE_LIMIT',
           429
         );
@@ -314,6 +327,13 @@ export class OpenRouterProvider implements AiProvider {
             `OpenRouter model invalid (${status}): ${message}`,
             'MODEL_UNAVAILABLE',
             503
+          );
+        }
+        if (isQuotaOrLimitMessage(message)) {
+          return new AiProviderError(
+            `OpenRouter quota or limit reached (${status}): ${message}`,
+            quotaOrLimitErrorCode(message),
+            status
           );
         }
         return new AiProviderError(

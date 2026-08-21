@@ -18,6 +18,37 @@ import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { apiRouter } from './routes/index.js';
 
+const DEFAULT_ALLOWED_ORIGINS = [
+  'https://propaar.netlify.app',
+  'https://propar.netlify.app',
+  'https://chatgpt.com',
+  'https://gemini.google.com',
+  'https://gemini.googleusercontent.com',
+  'https://claude.ai',
+  'https://mail.google.com',
+];
+
+const EXTENSION_ORIGIN_PATTERN = /^chrome-extension:\/\/[a-z]{32}$/;
+
+function getAllowedOrigins(): string[] {
+  const configuredOrigins = process.env['ALLOWED_ORIGINS']
+    ?.split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0) ?? [];
+
+  return Array.from(new Set([...DEFAULT_ALLOWED_ORIGINS, ...configuredOrigins]));
+}
+
+function isAllowedOrigin(origin: string): boolean {
+  const allowedOrigins = getAllowedOrigins();
+
+  return (
+    allowedOrigins.includes('*') ||
+    allowedOrigins.includes(origin) ||
+    EXTENSION_ORIGIN_PATTERN.test(origin)
+  );
+}
+
 /**
  * Create and configure Express application
  *
@@ -40,12 +71,13 @@ export const createApp = (): Application => {
       origin: (origin, callback) => {
         if (!origin) return callback(null, true);
         if (isDevelopment) return callback(null, true); // Allow any dev origin dynamically
-        
-        const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(',').map((s) => s.trim()) || [];
-        if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+
+        if (isAllowedOrigin(origin)) {
           return callback(null, true);
         }
-        return callback(new Error('Not allowed by CORS'));
+
+        console.warn('Blocked request from disallowed CORS origin', { origin });
+        return callback(null, false);
       },
       credentials: true,
     })

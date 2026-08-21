@@ -6,6 +6,11 @@ import {
   type AiProvider,
   type AiUsage,
 } from './ai-provider.types.js';
+import {
+  isInvalidApiKeyMessage,
+  isQuotaOrLimitMessage,
+  quotaOrLimitErrorCode,
+} from './provider-error.utils.js';
 
 interface OpenAICompatibleResponse {
   id?: string;
@@ -75,14 +80,21 @@ export class GroqProvider implements AiProvider {
           errorText,
         });
 
-        if (response.status === 401 || response.status === 403) {
+        if (response.status === 401 || (response.status === 403 && isInvalidApiKeyMessage(errorText))) {
           throw new AiProviderError('Invalid Groq API key. Please check your credentials.', 'INVALID_API_KEY', 401);
+        }
+        if (response.status === 403 && isQuotaOrLimitMessage(errorText)) {
+          throw new AiProviderError(
+            `Groq quota or limit reached (${response.status}): ${errorText}`,
+            quotaOrLimitErrorCode(errorText),
+            response.status
+          );
         }
         if (response.status === 404 || response.status === 410 || errorText.includes('model_not_found')) {
           throw new AiProviderError(`Groq model unavailable (${response.status}): ${errorText}`, 'MODEL_UNAVAILABLE', 503);
         }
         if (response.status === 429) {
-          throw new AiProviderError('Rate limited by Groq API. Please try again later.', 'RATE_LIMIT', 429);
+          throw new AiProviderError(`Rate limited by Groq API (${response.status}): ${errorText}`, 'RATE_LIMIT', 429);
         }
         if (response.status >= 500) {
           throw new AiProviderError('Groq API service unavailable.', 'PROVIDER_UNAVAILABLE', 503);
