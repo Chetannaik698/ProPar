@@ -40,12 +40,12 @@ const envSchema = z.object({
   ),
 
   // AI provider configuration
-  OPENROUTER_API_KEY: z.string().min(1, 'OPENROUTER_API_KEY is required'),
+  OPENROUTER_API_KEY: z.string().optional(),
   OPENROUTER_MODEL: z.string().default('openai/gpt-4o-mini'),
   OPENROUTER_FALLBACK_MODELS: z.string().default(''),
 
-  GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
+  GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
+  GEMINI_MODEL: z.string().default('gemini-3.1-flash-lite'),
 
   GROQ_API_KEY: z.string().optional(),
   GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
@@ -87,7 +87,7 @@ const envSchema = z.object({
   MICROSOFT_CLIENT_ID: z.string().optional(),
   MICROSOFT_CLIENT_SECRET: z.string().optional(),
 
-  // SMTP for magic-link emails (optional â€” falls back to console in dev)
+  // SMTP for magic-link emails (optional - falls back to console in dev)
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.preprocess(
     (val) => (val === '' || val === undefined ? undefined : Number(val)),

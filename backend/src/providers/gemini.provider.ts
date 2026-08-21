@@ -3,6 +3,7 @@ import {
   AiProviderError,
   type AiCompletionRequest,
   type AiCompletionResult,
+  type AiMessage,
   type AiProvider,
   type AiUsage,
 } from './ai-provider.types.js';
@@ -12,22 +13,23 @@ import {
   quotaOrLimitErrorCode,
 } from './provider-error.utils.js';
 
-interface OpenAICompatibleResponse {
-  id?: string;
-  choices?: Array<{
-    message?: {
-      content?: string;
+interface GeminiGenerateContentResponse {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{
+        text?: string;
+      }>;
     };
   }>;
-  usage?: {
-    prompt_tokens?: number;
-    completion_tokens?: number;
-    total_tokens?: number;
+  usageMetadata?: {
+    promptTokenCount?: number;
+    candidatesTokenCount?: number;
+    totalTokenCount?: number;
   };
   error?: {
     message?: string;
-    type?: string;
-    code?: string;
+    status?: string;
+    code?: number;
   };
 }
 
@@ -54,7 +56,6 @@ export class GeminiProvider implements AiProvider {
         if (!(error instanceof AiProviderError)) throw error;
         lastError = error;
 
-        // Fallback to next Gemini model candidate on rate limit (429) or model unavailable (404)
         if (error.code === 'RATE_LIMIT' || error.code === 'MODEL_UNAVAILABLE' || error.code === 'PROVIDER_UNAVAILABLE') {
           console.warn('Gemini model attempt rate-limited or unavailable; trying next model candidate', {
             failedModel: model,
@@ -87,21 +88,18 @@ export class GeminiProvider implements AiProvider {
         timeoutMs: aiConfig.gemini.timeoutMs,
       });
 
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model,
-          messages: request.messages,
-          max_tokens: aiConfig.gemini.maxCompletionTokens,
-          temperature: 0.2,
-          response_format: { type: 'json_object' },
-        }),
-        signal: controller.signal,
-      });
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey,
+          },
+          body: JSON.stringify(this.buildGenerateContentBody(request.messages)),
+          signal: controller.signal,
+        }
+      );
 
       if (!response.ok) {
         const errorText = (await response.text()).slice(0, 2000);
@@ -111,6 +109,9 @@ export class GeminiProvider implements AiProvider {
           errorText,
         });
 
+        if (response.status === 400 && (errorText.includes('not found') || errorText.includes('NOT_FOUND'))) {
+          throw new AiProviderError(`Google Gemini model unavailable (${response.status}): ${errorText}`, 'MODEL_UNAVAILABLE', 503);
+        }
         if (response.status === 401 || (response.status === 403 && isInvalidApiKeyMessage(errorText))) {
           throw new AiProviderError('Invalid Gemini API key. Please check your credentials.', 'INVALID_API_KEY', 401);
         }
@@ -134,31 +135,25 @@ export class GeminiProvider implements AiProvider {
         throw new AiProviderError(`Gemini error (${response.status}): ${errorText}`, 'PROVIDER_ERROR', response.status);
       }
 
-      const payload = (await response.json()) as OpenAICompatibleResponse;
-      const content = payload.choices?.[0]?.message?.content ?? '';
+      const payload = (await response.json()) as GeminiGenerateContentResponse;
+      const content = this.extractText(payload);
 
       if (!content || content.trim().length === 0) {
         throw new AiProviderError('Gemini returned an empty response.', 'MALFORMED_RESPONSE');
       }
 
-      const usage: AiUsage | undefined = payload.usage
-        ? {
-            ...(payload.usage.prompt_tokens !== undefined ? { promptTokens: payload.usage.prompt_tokens } : {}),
-            ...(payload.usage.completion_tokens !== undefined ? { completionTokens: payload.usage.completion_tokens } : {}),
-            totalTokens: payload.usage.total_tokens ?? (payload.usage.prompt_tokens ?? 0) + (payload.usage.completion_tokens ?? 0),
-          }
-        : undefined;
+      const usage = this.mapUsage(payload.usageMetadata);
 
       console.info('Gemini AI response received', {
         provider: this.name,
-        model: this.model,
+        model,
         contentLength: content.length,
         usage: usage ?? null,
       });
 
       return {
         content,
-        model: this.model,
+        model,
         ...(usage ? { usage } : {}),
       };
     } catch (error) {
@@ -174,5 +169,55 @@ export class GeminiProvider implements AiProvider {
     } finally {
       clearTimeout(timeout);
     }
+  }
+
+  private buildGenerateContentBody(messages: AiMessage[]): Record<string, unknown> {
+    const systemInstruction = messages
+      .filter((message) => message.role === 'system')
+      .map((message) => message.content)
+      .join('\n\n');
+
+    const userMessages = messages.filter((message) => message.role === 'user');
+    const contents = userMessages.map((message) => ({
+      role: 'user',
+      parts: [{ text: message.content }],
+    }));
+
+    return {
+      ...(systemInstruction
+        ? {
+            systemInstruction: {
+              parts: [{ text: systemInstruction }],
+            },
+          }
+        : {}),
+      contents,
+      generationConfig: {
+        maxOutputTokens: aiConfig.gemini.maxCompletionTokens,
+        temperature: 0.2,
+        responseMimeType: 'application/json',
+      },
+    };
+  }
+
+  private extractText(payload: GeminiGenerateContentResponse): string {
+    return payload.candidates?.[0]?.content?.parts
+      ?.map((part) => part.text ?? '')
+      .join('')
+      .trim() ?? '';
+  }
+
+  private mapUsage(usage?: GeminiGenerateContentResponse['usageMetadata']): AiUsage | undefined {
+    if (!usage) return undefined;
+
+    const promptTokens = usage.promptTokenCount;
+    const completionTokens = usage.candidatesTokenCount;
+    const totalTokens = usage.totalTokenCount ?? (promptTokens ?? 0) + (completionTokens ?? 0);
+
+    return {
+      ...(promptTokens !== undefined ? { promptTokens } : {}),
+      ...(completionTokens !== undefined ? { completionTokens } : {}),
+      totalTokens,
+    };
   }
 }
