@@ -12,7 +12,7 @@ export function sanitizeModelName(provider: 'groq' | 'openrouter' | 'gemini', mo
     if (trimmed.includes('gemini-3.1')) return 'google/gemini-2.0-flash-001';
   }
   if (provider === 'gemini') {
-    if (trimmed === 'gemini-2.0-flash' || trimmed.includes('gemini-3.1')) return 'gemini-3.6-flash';
+    if (trimmed.includes('gemini-3.')) return 'gemini-2.5-flash';
   }
   return trimmed;
 }

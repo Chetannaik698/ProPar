@@ -41,7 +41,7 @@ export const createApp = (): Application => {
         if (!origin) return callback(null, true);
         if (isDevelopment) return callback(null, true); // Allow any dev origin dynamically
         
-        const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(',') || [];
+        const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(',').map((s) => s.trim()) || [];
         if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
           return callback(null, true);
         }

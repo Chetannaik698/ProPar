@@ -47,7 +47,7 @@ const envSchema = z.object({
     .default('meta-llama/llama-3.3-70b-instruct,google/gemini-2.0-flash-lite-preview-02-05:free,openai/gpt-4o-mini'),
 
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default('gemini-3.6-flash'),
+  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
 
   GROQ_API_KEY: z.string().optional(),
   GROQ_MODEL: z.string().default('llama-3.3-70b-specdec'),
