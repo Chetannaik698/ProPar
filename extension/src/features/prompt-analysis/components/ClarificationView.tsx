@@ -31,12 +31,21 @@ export function ClarificationView({ errorMessage, questions, onSubmit }: Clarifi
     );
   };
 
+  const handleSkip = () => {
+    onSubmit(
+      questions.map((question) => ({
+        questionId: question.id,
+        answer: 'Use reasonable assumptions and clear placeholders where needed.',
+      })),
+    );
+  };
+
   return (
     <form className="clarify-view" onSubmit={handleSubmit}>
       <div className="results-intro">
         <div>
           <p className="results-kicker">Clarify before sending</p>
-          <h2>A few details will improve the prompt.</h2>
+          <h2>One detail would help.</h2>
         </div>
       </div>
 
@@ -54,10 +63,15 @@ export function ClarificationView({ errorMessage, questions, onSubmit }: Clarifi
 
       {errorMessage ? <p className="clarify-error" role="alert">{errorMessage}</p> : null}
 
-      <button className="primary-action clarify-submit" disabled={!canSubmit} type="submit">
-        <Send size={15} />
-        Generate Improved Prompt
-      </button>
+      <div className="clarify-actions">
+        <button className="secondary-action" onClick={handleSkip} type="button">
+          Skip
+        </button>
+        <button className="primary-action clarify-submit" disabled={!canSubmit} type="submit">
+          <Send size={15} />
+          Generate Prompt
+        </button>
+      </div>
     </form>
   );
 }
@@ -85,8 +99,6 @@ function ClarificationQuestionCard({
           <p className="card-label">Question {index + 1}</p>
           <h3 className="clarify-question">{question.question}</h3>
           {question.reason || question.explanation ? <p className="clarify-explanation">{question.reason ?? question.explanation}</p> : null}
-          {question.expectedImprovement ? <p className="clarify-explanation">{question.expectedImprovement}</p> : null}
-          {question.informationGain ? <p className="clarify-explanation">{question.informationGain}</p> : null}
         </div>
       </div>
 
