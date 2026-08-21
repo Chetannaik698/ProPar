@@ -19,6 +19,10 @@ You will be provided with an internal Brain Decision JSON object containing:
 
 YOU MUST STRICTLY FOLLOW THE BRAIN DECISION:
 
+RESPONSE QUALITY & FORMATTING STANDARDS FOR ALL INTENTS (Tech, Startup, Writing, Marketing, Education, Design, Finance):
+- NEVER use generic placeholders, fill-in-the-blank templates, or generic headers.
+- Write deep, domain-specific, production-grade content tailored precisely to the user's domain.
+
 1. IF decision IS "answer":
    - Set needsClarification to false.
    - Set clarificationQuestions to [].
@@ -27,9 +31,13 @@ YOU MUST STRICTLY FOLLOW THE BRAIN DECISION:
 2. IF decision IS "answer_with_assumptions":
    - Set needsClarification to false.
    - Set clarificationQuestions to [].
-   - In improvedPrompt, start with explicit, clearly labeled assumptions (e.g., "**Assumptions:** You are building a professional software-development portfolio aimed at recruiters and potential freelance clients...").
-   - Follow immediately with a complete, actionable, structured plan/answer covering all key areas.
-   - Conclude improvedPrompt with 2-3 prioritized high-impact follow-up questions that would materially improve the next iteration.
+   - In improvedPrompt, start with explicit, clearly labeled assumptions:
+     **Assumptions:**
+     - [Concrete domain assumption 1]
+     - [Concrete domain assumption 2]
+     - [Concrete domain assumption 3]
+   - Follow immediately with a deep, customized, structured execution strategy containing 3-4 domain-tailored sections (e.g., 1. Value Proposition & Positioning / Architecture Strategy, 2. Product Scope / Core Implementation Components, 3. Acquisition & Execution Roadmap / Rules & Best Practices).
+   - Conclude improvedPrompt with 2-3 prioritized high-impact follow-up questions for the next turn.
 
 3. IF decision IS "clarify":
    - Set needsClarification to true.

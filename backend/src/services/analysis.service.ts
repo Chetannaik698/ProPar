@@ -350,7 +350,7 @@ export class AnalysisService {
         whatChanged: ['Identified key ambiguous decisions', 'Structured clarification questions'],
         thinkingScore: 78,
         estimatedImprovement: 35,
-        improvedPrompt: `Before creating a detailed plan for your startup, I need a few key details to tailor the strategy to your specific business:`,
+        improvedPrompt: `Before creating a detailed plan for "${prompt}", I need a few key decisions to tailor the strategy specifically to your goals:`,
         needsClarification: true,
         clarificationQuestions: brainDecision.priorityQuestions.slice(0, 3).map((pq, idx) => ({
           id: pq.id || `q_${idx}`,
@@ -446,13 +446,17 @@ useEffect(() => {
     } else {
       customPlan = `${assumptionBlock}## Execution Strategy for: "${prompt}"
 
-### 1. Core Objective & Scope
-Define primary goals, target audience, and key deliverables for ${prompt}.
+### 1. Strategic Positioning & Core Objective
+- Primary Goal: Deliver an actionable, high-impact implementation framework for ${prompt}.
+- Success Benchmark: Clear operational roadmap with concrete deliverables and risk controls.
 
-### 2. Step-by-Step Execution
-- Phase 1: Planning and requirement definition.
-- Phase 2: Implementation and core build.
-- Phase 3: Testing, optimization, and launch.`;
+### 2. Core Implementation Roadmap
+1. **Foundation & Architecture**: Establish technical/business parameters and baseline requirements.
+2. **Execution & Build Phase**: Step-by-step development of core components and deliverables.
+3. **Quality Verification & Launch**: Rigorous testing, optimization, and production deployment.
+
+### 3. Key Considerations & Risk Mitigation
+- Identify critical dependencies and maintain strict quality standards throughout execution.`;
     }
 
     return {
