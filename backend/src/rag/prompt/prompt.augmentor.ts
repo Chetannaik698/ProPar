@@ -10,6 +10,7 @@ export class PromptAugmentor {
 
     return [
       'Relevant Knowledge:',
+      'Use this knowledge only as background reference. If it recommends XML tags, prompt-pattern labels, or other internal formatting, apply the underlying principle but keep the user-facing improvedPrompt in clean professional Markdown/plain text unless the user explicitly asks for XML or HTML.',
       knowledgeBlock,
       '',
       originalSystemPrompt,

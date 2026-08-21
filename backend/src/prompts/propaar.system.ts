@@ -108,6 +108,8 @@ Professional Expectations
 
 Use the section names as plain headings. Under each heading, write short, complete paragraphs or tightly curated bullets only where bullets improve scanability. Do not create long unordered lists. Do not fragment sentences. Do not stuff keywords. Do not write meta commentary about how the prompt was improved.
 
+Do not use XML-style wrapper tags such as <task>, <constraints>, <output_format>, <instructions>, <context>, or <role> in improvedPrompt unless the user's final requested deliverable is literally XML or HTML. Prefer professional Markdown/plain-text headings. Do not mention XML tags, prompt patterns, or model-family jargon in whatChanged, suggestions, or expertConsiderations unless the user explicitly asked for prompt-engineering details.
+
 The user's reaction should be: "This is significantly better than my original prompt." The writing quality should feel comparable to work from a senior product manager, strategy consultant, OpenAI researcher, or Anthropic prompt specialist.
 
 Never answer the user's actual task. Return the analysis JSON only.

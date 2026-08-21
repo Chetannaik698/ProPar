@@ -11,9 +11,75 @@ export interface FormattedPrompt {
 
 const LIST_MARKER_PATTERN = /^\s*(?:[-*]|(?:\d+[.)]))\s+/;
 const HEADING_PATTERN = /^(?:#{1,6}\s+)?([A-Z][A-Za-z\s/&-]{2,60}):?$/;
+const STRUCTURAL_XML_TAGS = [
+  'task',
+  'objective',
+  'role',
+  'context',
+  'background',
+  'instructions',
+  'requirements',
+  'constraints',
+  'output_format',
+  'expected_deliverables',
+  'deliverables',
+  'success_criteria',
+  'professional_expectations',
+  'input',
+  'examples',
+] as const;
+
+const STRUCTURAL_XML_TAG_PATTERN = new RegExp(
+  `<\\/?(?:${STRUCTURAL_XML_TAGS.join('|')})\\b[^>]*>`,
+  'i',
+);
+
+const XML_HEADING_LABELS: Record<string, string> = {
+  task: 'Objective',
+  objective: 'Objective',
+  role: 'Role',
+  context: 'Context',
+  background: 'Background',
+  instructions: 'Instructions',
+  requirements: 'Requirements',
+  constraints: 'Constraints',
+  output_format: 'Output Format',
+  expected_deliverables: 'Expected Deliverables',
+  deliverables: 'Expected Deliverables',
+  success_criteria: 'Success Criteria',
+  professional_expectations: 'Professional Expectations',
+  input: 'Input',
+  examples: 'Examples',
+};
 
 function cleanText(value: string): string {
-  return value.replace(/\r\n/g, '\n').replace(/\u200B/g, '').trim();
+  return normalizeStructuralXmlTags(value.replace(/\r\n/g, '\n').replace(/\u200B/g, '')).trim();
+}
+
+function normalizeStructuralXmlTags(value: string): string {
+  if (!STRUCTURAL_XML_TAG_PATTERN.test(value)) return value;
+
+  let normalized = value;
+
+  for (const tag of STRUCTURAL_XML_TAGS) {
+    const label = XML_HEADING_LABELS[tag];
+    const openingTagPattern = new RegExp(`<${tag}\\b[^>]*>\\s*`, 'gi');
+    const closingTagPattern = new RegExp(`\\s*<\\/${tag}>`, 'gi');
+
+    normalized = normalized
+      .replace(openingTagPattern, (_, offset: number, fullText: string) => {
+        const previousChar = fullText[offset - 1] ?? '\n';
+        const prefix = previousChar === '\n' ? '' : '\n';
+        return `${prefix}${label}\n`;
+      })
+      .replace(closingTagPattern, '\n');
+  }
+
+  return normalized
+    .split('\n')
+    .map((line) => line.trim())
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n');
 }
 
 function normalizeItem(item: string): string {

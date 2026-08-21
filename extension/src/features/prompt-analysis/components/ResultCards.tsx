@@ -374,32 +374,6 @@ export function SuccessToast({ message }: { message: string }) {
   );
 }
 
-export function detectOpenAiPattern(text: string): { name: string; tag: string } | null {
-  if (!text) return null;
-  if (/Formatting re-enabled/i.test(text)) {
-    return { name: 'Pattern 9: Reasoning Markdown Opt-In', tag: 'o-series Model' };
-  }
-  if (/\bGoal:\s/i.test(text) && /\bConstraints:\s/i.test(text)) {
-    return { name: 'Pattern 6: High-Level Goal Prompt', tag: 'Reasoning Model (o1/o3/o4-mini)' };
-  }
-  if (/# Identity/i.test(text) && /# Instructions/i.test(text)) {
-    return { name: 'Pattern 1: Structured Developer Message', tag: 'OpenAI Canonical Pattern' };
-  }
-  if (/# Identity/i.test(text) && /# Data/i.test(text)) {
-    return { name: 'Pattern 7: Explicit Precise-Instruction', tag: 'GPT Model (GPT-4.1/5)' };
-  }
-  if (/Desired format:/i.test(text)) {
-    return { name: 'Pattern 3: Format-by-Example', tag: 'Structured Output' };
-  }
-  if (/Text 1:/i.test(text) && /Output 1:/i.test(text)) {
-    return { name: 'Pattern 4: Few-Shot Demonstration', tag: 'Task Demonstration' };
-  }
-  if (/Text:\s*"""/i.test(text) || /<task_instruction>/i.test(text)) {
-    return { name: 'Pattern 2: Instruction-then-Delimited-Content', tag: 'Delimited Task' };
-  }
-  return { name: 'Pattern 1: Structured Developer Message', tag: 'OpenAI Prompt Standard' };
-}
-
 export function PreFlightSimulationCard({ preFlight }: { preFlight?: any }) {
   if (!preFlight || !preFlight.failureVectors?.length) return null;
 
@@ -459,10 +433,6 @@ export function PreFlightSimulationCard({ preFlight }: { preFlight?: any }) {
 }
 
 export function ImprovedPromptCard({ formattedPrompt, copyState, replaceState, onCopy, onReplace, labels }: { formattedPrompt: FormattedPrompt; copyState: CopyState; replaceState: 'idle' | 'ready' | 'success'; onCopy: () => Promise<void>; onReplace: () => void; labels: PlatformLabels }) {
-  const platform = getActivePlatformAdapter();
-  const isChatGPT = platform.id === 'chatgpt';
-  const openAiPattern = isChatGPT ? detectOpenAiPattern(formattedPrompt.text) : null;
-
   return (
     <section className="result-card improved-prompt-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
@@ -470,12 +440,6 @@ export function ImprovedPromptCard({ formattedPrompt, copyState, replaceState, o
           <p className="card-label">{labels.finalCardLabel}</p>
           <p className="card-caption">{labels.finalCardCaption}</p>
         </div>
-        {openAiPattern && (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.25)', fontSize: '11px', fontWeight: 600, color: '#059669' }}>
-            <Sparkles size={13} />
-            <span>{openAiPattern.name}</span>
-          </div>
-        )}
       </div>
       <div className="prompt-box">{formattedPrompt.blocks.map((block, index) => <PromptBlock block={block} key={`${block.type}-${index}`} />)}</div>
       <div className="prompt-actions">

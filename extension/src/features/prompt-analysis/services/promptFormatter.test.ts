@@ -19,4 +19,19 @@ describe('formatImprovedPrompt', () => {
     expect(result.text).toContain('- React');
     expect(result.text).toContain('- Stripe');
   });
+
+  it('normalizes structural XML prompt wrappers into professional headings', () => {
+    const result = formatImprovedPrompt(
+      '<task>Generate a practice set for Python string operations.</task>\n\n<constraints>\n- Beginner friendly\n</constraints>\n\n<output_format>Problem and solution for each item.</output_format>',
+    );
+
+    expect(result.text).not.toContain('<task>');
+    expect(result.text).not.toContain('<constraints>');
+    expect(result.text).not.toContain('<output_format>');
+    expect(result.text).toContain('Objective');
+    expect(result.text).toContain('Generate a practice set for Python string operations.');
+    expect(result.text).toContain('Constraints');
+    expect(result.text).toContain('- Beginner friendly');
+    expect(result.text).toContain('Output Format');
+  });
 });

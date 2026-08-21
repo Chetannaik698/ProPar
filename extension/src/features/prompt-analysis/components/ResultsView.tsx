@@ -166,8 +166,6 @@ export function ResultsView({ analysis, onClose, platform, isOriginalPromptEmpty
             initial={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
           >
-            <WhatChangedCard items={analysis.whatChanged} labels={platform.labels} />
-
             {isGmail ? (
               <section className="result-card improved-prompt-card">
                 <div>
@@ -310,6 +308,7 @@ export function ResultsView({ analysis, onClose, platform, isOriginalPromptEmpty
               </div>
             )}
 
+            <WhatChangedCard items={analysis.whatChanged} labels={platform.labels} />
             <PreFlightSimulationCard preFlight={analysis.preFlightSimulation} />
             <GoalDiscoveryCard fallbackIntent={analysis.intent} goalDiscovery={analysis.goalDiscovery} labels={platform.labels} />
             <ThinkingCard hiddenAssumptions={analysis.hiddenAssumptions} labels={platform.labels} thinkingGap={analysis.thinkingGap} />
