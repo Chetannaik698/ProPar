@@ -29,7 +29,8 @@ export const analyzePrompt = async (req: Request, res: Response, next: NextFunct
     const result = await analysisService.analyze(
       parseResult.data.prompt,
       parseResult.data.platform,
-      parseResult.data.clarificationAnswers ?? []
+      parseResult.data.clarificationAnswers ?? [],
+      parseResult.data.history ?? []
     );
     const [seconds, nanoseconds] = process.hrtime(startTime);
     const processingTime = `${Math.round(seconds * 1000 + nanoseconds / 1_000_000)}ms`;

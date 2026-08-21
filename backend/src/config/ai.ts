@@ -9,7 +9,7 @@ export function sanitizeModelName(provider: 'groq' | 'openrouter' | 'gemini', mo
     if (trimmed === 'llama-3.3-70b-versatile') return 'llama-3.3-70b-specdec';
   }
   if (provider === 'openrouter') {
-    if (trimmed.includes('gemini-3.1')) return 'google/gemini-2.0-flash-001';
+    if (trimmed.includes('gemini') || trimmed.includes('3.1') || trimmed.includes('llama') || trimmed.includes('mistral') || trimmed.includes('qwen')) return 'openrouter/auto';
   }
   if (provider === 'gemini') {
     if (trimmed.includes('gemini-3.')) return 'gemini-2.5-flash';
@@ -24,6 +24,14 @@ export const aiConfig = {
     providerName: 'gemini',
     apiKey: env.GEMINI_API_KEY,
     model: sanitizeModelName('gemini', env.GEMINI_MODEL),
+    modelCandidates: Array.from(
+      new Set([
+        sanitizeModelName('gemini', env.GEMINI_MODEL),
+        'gemini-2.5-flash',
+        'gemini-2.0-flash',
+        'gemini-2.5-pro',
+      ])
+    ),
     timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
     maxCompletionTokens: env.AI_MAX_COMPLETION_TOKENS,
   },
@@ -31,6 +39,15 @@ export const aiConfig = {
     providerName: 'groq',
     apiKey: env.GROQ_API_KEY,
     model: sanitizeModelName('groq', env.GROQ_MODEL),
+    modelCandidates: Array.from(
+      new Set([
+        sanitizeModelName('groq', env.GROQ_MODEL),
+        'llama-3.3-70b-specdec',
+        'llama-3.3-70b-versatile',
+        'llama-3.1-8b-instant',
+        'mixtral-8x7b-32768',
+      ])
+    ),
     timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
     maxCompletionTokens: env.AI_MAX_COMPLETION_TOKENS,
   },
@@ -42,6 +59,10 @@ export const aiConfig = {
       new Set(
         [
           sanitizeModelName('openrouter', env.OPENROUTER_MODEL),
+          'google/gemini-2.0-flash-exp:free',
+          'meta-llama/llama-3.3-70b-instruct:free',
+          'qwen/qwen-2.5-72b-instruct:free',
+          'deepseek/deepseek-r1:free',
           ...env.OPENROUTER_FALLBACK_MODELS.split(',')
             .map((model) => sanitizeModelName('openrouter', model))
             .filter((model) => model.length > 0),

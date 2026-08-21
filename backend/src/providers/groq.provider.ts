@@ -45,6 +45,35 @@ export class GroqProvider implements AiProvider {
       );
     }
 
+    let lastError: AiProviderError | null = null;
+
+    for (const model of aiConfig.groq.modelCandidates) {
+      try {
+        return await this.completeWithModel(request, model, apiKey);
+      } catch (error) {
+        if (!(error instanceof AiProviderError)) throw error;
+        lastError = error;
+
+        if (error.code === 'RATE_LIMIT' || error.code === 'MODEL_UNAVAILABLE' || error.code === 'PROVIDER_UNAVAILABLE') {
+          console.warn('Groq model attempt rate-limited or unavailable; trying next model candidate', {
+            failedModel: model,
+            errorCode: error.code,
+            message: error.message,
+          });
+          continue;
+        }
+        throw error;
+      }
+    }
+
+    throw lastError ?? new AiProviderError('Groq completion failed across all model candidates.', 'PROVIDER_ERROR');
+  }
+
+  private async completeWithModel(
+    request: AiCompletionRequest,
+    model: string,
+    apiKey: string
+  ): Promise<AiCompletionResult> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), aiConfig.groq.timeoutMs);
     const promptLength = request.messages.reduce((total, msg) => total + msg.content.length, 0);
@@ -52,7 +81,7 @@ export class GroqProvider implements AiProvider {
     try {
       console.info('Groq AI request started', {
         provider: this.name,
-        model: this.model,
+        model,
         promptLength,
         timeoutMs: aiConfig.groq.timeoutMs,
       });
@@ -64,7 +93,7 @@ export class GroqProvider implements AiProvider {
           'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: this.model,
+          model,
           messages: request.messages,
           max_tokens: aiConfig.groq.maxCompletionTokens,
           temperature: 0.2,
@@ -76,6 +105,7 @@ export class GroqProvider implements AiProvider {
       if (!response.ok) {
         const errorText = (await response.text()).slice(0, 2000);
         console.error('Groq HTTP error', {
+          model,
           statusCode: response.status,
           errorText,
         });

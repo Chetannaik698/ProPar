@@ -45,6 +45,36 @@ export class GeminiProvider implements AiProvider {
       );
     }
 
+    let lastError: AiProviderError | null = null;
+
+    for (const model of aiConfig.gemini.modelCandidates) {
+      try {
+        return await this.completeWithModel(request, model, apiKey);
+      } catch (error) {
+        if (!(error instanceof AiProviderError)) throw error;
+        lastError = error;
+
+        // Fallback to next Gemini model candidate on rate limit (429) or model unavailable (404)
+        if (error.code === 'RATE_LIMIT' || error.code === 'MODEL_UNAVAILABLE' || error.code === 'PROVIDER_UNAVAILABLE') {
+          console.warn('Gemini model attempt rate-limited or unavailable; trying next model candidate', {
+            failedModel: model,
+            errorCode: error.code,
+            message: error.message,
+          });
+          continue;
+        }
+        throw error;
+      }
+    }
+
+    throw lastError ?? new AiProviderError('Gemini completion failed across all model candidates.', 'PROVIDER_ERROR');
+  }
+
+  private async completeWithModel(
+    request: AiCompletionRequest,
+    model: string,
+    apiKey: string
+  ): Promise<AiCompletionResult> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), aiConfig.gemini.timeoutMs);
     const promptLength = request.messages.reduce((total, msg) => total + msg.content.length, 0);
@@ -52,7 +82,7 @@ export class GeminiProvider implements AiProvider {
     try {
       console.info('Gemini AI request started', {
         provider: this.name,
-        model: this.model,
+        model,
         promptLength,
         timeoutMs: aiConfig.gemini.timeoutMs,
       });
@@ -64,7 +94,7 @@ export class GeminiProvider implements AiProvider {
           'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: this.model,
+          model,
           messages: request.messages,
           max_tokens: aiConfig.gemini.maxCompletionTokens,
           temperature: 0.2,
@@ -76,6 +106,7 @@ export class GeminiProvider implements AiProvider {
       if (!response.ok) {
         const errorText = (await response.text()).slice(0, 2000);
         console.error('Gemini HTTP error', {
+          model,
           statusCode: response.status,
           errorText,
         });

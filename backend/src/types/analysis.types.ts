@@ -1,7 +1,13 @@
+export interface HistoryItem {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export interface AnalysisRequest {
   prompt: string;
   platform?: PlatformId;
   clarificationAnswers?: ClarificationAnswer[];
+  history?: HistoryItem[];
 }
 
 export type PlatformId = 'chatgpt' | 'claude' | 'linkedin' | 'gmail';

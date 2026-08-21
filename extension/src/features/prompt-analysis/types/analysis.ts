@@ -1,3 +1,8 @@
+export interface HistoryItem {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export interface ClarificationQuestion {
   id: string;
   question: string;

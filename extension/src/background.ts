@@ -56,41 +56,66 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse: (
     promptLength: message.prompt.length,
   });
 
-  void fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      prompt: message.prompt,
-      platform: message.platform,
-      ...(message.clarificationAnswers?.length ? { clarificationAnswers: message.clarificationAnswers } : {}),
-    }),
-    signal: controller.signal,
-  })
-    .then(async (response) => {
-      if (!response.ok) {
-        console.error('[ProPaar] Backend request failed', { status: response.status, statusText: response.statusText });
-        sendResponse({ ok: false, code: 'network', error: 'Unable to connect to ProPaar Backend.' });
-        return;
-      }
+  const requestBody = JSON.stringify({
+    prompt: message.prompt,
+    platform: message.platform,
+    ...(message.clarificationAnswers?.length ? { clarificationAnswers: message.clarificationAnswers } : {}),
+    ...((message as { history?: unknown[] }).history?.length ? { history: (message as { history?: unknown[] }).history } : {}),
+  });
 
-      let json: unknown;
+  const performFetch = async () => {
+    let response: Response | null = null;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
       try {
-        json = await response.json();
-      } catch {
-        console.error('[ProPaar] Backend response JSON parsing failed');
-        sendResponse({ ok: false, code: 'invalid', error: 'Unexpected server response.' });
-        return;
+        response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: requestBody,
+          signal: controller.signal,
+        });
+        if (response.ok) break;
+        if (response.status >= 500 && attempt < 2) {
+          console.warn(`[ProPaar] Backend returned ${response.status}, retrying (attempt ${attempt + 1})...`);
+          await new Promise((r) => setTimeout(r, 2000));
+          continue;
+        }
+        break;
+      } catch (err) {
+        if (attempt < 2 && !(err instanceof DOMException && err.name === 'AbortError')) {
+          console.warn(`[ProPaar] Network fetch failed, retrying (attempt ${attempt + 1})...`);
+          await new Promise((r) => setTimeout(r, 2000));
+          continue;
+        }
+        throw err;
       }
+    }
 
-      if (!hasAnalysisPayload(json)) {
-        console.error('[ProPaar] Backend response missing analysis payload', json);
-        sendResponse({ ok: false, code: 'invalid', error: 'Unexpected server response.' });
-        return;
-      }
+    if (!response || !response.ok) {
+      console.error('[ProPaar] Backend request failed', { status: response?.status });
+      sendResponse({ ok: false, code: 'network', error: 'Unable to connect to ProPaar Backend.' });
+      return;
+    }
 
-      console.debug('[ProPaar] Backend response received', { platform: message.platform });
-      sendResponse({ ok: true, data: json });
-    })
+    let json: unknown;
+    try {
+      json = await response.json();
+    } catch {
+      console.error('[ProPaar] Backend response JSON parsing failed');
+      sendResponse({ ok: false, code: 'invalid', error: 'Unexpected server response.' });
+      return;
+    }
+
+    if (!hasAnalysisPayload(json)) {
+      console.error('[ProPaar] Backend response missing analysis payload', json);
+      sendResponse({ ok: false, code: 'invalid', error: 'Unexpected server response.' });
+      return;
+    }
+
+    console.debug('[ProPaar] Backend response received', { platform: message.platform });
+    sendResponse({ ok: true, data: json });
+  };
+
+  void performFetch()
     .catch((error: unknown) => {
       if (error instanceof DOMException && error.name === 'AbortError') {
         console.error('[ProPaar] Backend request timed out');

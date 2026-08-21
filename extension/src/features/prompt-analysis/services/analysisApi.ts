@@ -1,7 +1,7 @@
-import type { AnalysisResponse, ClarificationAnswer } from '../types/analysis';
+import type { AnalysisResponse, ClarificationAnswer, HistoryItem } from '../types/analysis';
 import type { PlatformId } from '../../../platform/adapters/types';
 
-const API_URL = 'https://propar-backend.onrender.com/api/v1/analyze';
+const API_URL = 'http://localhost:5000/api/v1/analyze';
 const TIMEOUT_MS = 75_000;
 
 export class AnalysisError extends Error {
@@ -35,6 +35,7 @@ function sendAnalyzeMessage(
   prompt: string,
   platform: PlatformId,
   clarificationAnswers?: ClarificationAnswer[],
+  history?: HistoryItem[],
 ): Promise<AnalysisResponse> {
   console.debug('[ProPaar] Message sent to background', { platform, promptLength: prompt.length });
 
@@ -45,6 +46,7 @@ function sendAnalyzeMessage(
         prompt,
         platform,
         ...(clarificationAnswers?.length ? { clarificationAnswers } : {}),
+        ...(history?.length ? { history } : {}),
       },
       (response: BackgroundAnalyzeResponse | undefined) => {
         const runtimeError = chrome.runtime.lastError;
@@ -78,12 +80,18 @@ async function fetchAnalyzeDirect(
   platform: PlatformId,
   signal: AbortSignal,
   clarificationAnswers?: ClarificationAnswer[],
+  history?: HistoryItem[],
 ): Promise<AnalysisResponse> {
   console.debug('[ProPaar] Backend request started', { platform, promptLength: prompt.length });
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, platform, ...(clarificationAnswers?.length ? { clarificationAnswers } : {}) }),
+    body: JSON.stringify({
+      prompt,
+      platform,
+      ...(clarificationAnswers?.length ? { clarificationAnswers } : {}),
+      ...(history?.length ? { history } : {}),
+    }),
     signal,
   });
 
@@ -114,13 +122,13 @@ export async function analyzePrompt(
   platform: PlatformId = 'chatgpt',
   signal?: AbortSignal,
   clarificationAnswers?: ClarificationAnswer[],
+  history?: HistoryItem[],
 ): Promise<AnalysisResponse> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), TIMEOUT_MS);
 
   const mergedSignal = ((): AbortSignal => {
     if (!signal) return controller.signal;
-    // Compose signals: abort if either aborts
     const composed = new AbortController();
     const forward = () => composed.abort();
     signal.addEventListener('abort', forward, { once: true });
@@ -130,13 +138,12 @@ export async function analyzePrompt(
 
   try {
     if (canUseExtensionMessaging()) {
-      return await sendAnalyzeMessage(prompt, platform, clarificationAnswers);
+      return await sendAnalyzeMessage(prompt, platform, clarificationAnswers, history);
     }
 
-    return await fetchAnalyzeDirect(prompt, platform, mergedSignal, clarificationAnswers);
+    return await fetchAnalyzeDirect(prompt, platform, mergedSignal, clarificationAnswers, history);
   } catch (err: unknown) {
     if (isAbortError(err)) {
-      // Determine whether it was timeout by checking controller
       console.error('[ProPaar] Backend request timed out');
       throw new AnalysisError('Analysis timed out. Please try again.', 'timeout');
     }
