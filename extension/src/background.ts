@@ -4,6 +4,8 @@ import type { PlatformId } from './platform/adapters/types';
 const API_URL = 'https://propar-backend.onrender.com/api/v1/analyze';
 const TIMEOUT_MS = 75_000;
 
+type AnalyzeFailureCode = 'network' | 'timeout' | 'invalid' | 'unknown' | 'rate_limit' | 'provider';
+
 interface AnalyzeRequestMessage {
   type: 'PROPAR_ANALYZE';
   prompt: string;
@@ -19,10 +21,18 @@ interface AnalyzeSuccessMessage {
 interface AnalyzeFailureMessage {
   ok: false;
   error: string;
-  code: 'network' | 'timeout' | 'invalid' | 'unknown';
+  code: AnalyzeFailureCode;
 }
 
 type AnalyzeResponseMessage = AnalyzeSuccessMessage | AnalyzeFailureMessage;
+
+interface BackendErrorPayload {
+  error?: {
+    message?: string;
+    code?: string;
+    statusCode?: number;
+  };
+}
 
 function isAnalyzeRequestMessage(message: unknown): message is AnalyzeRequestMessage {
   return (
@@ -35,6 +45,50 @@ function isAnalyzeRequestMessage(message: unknown): message is AnalyzeRequestMes
 
 function hasAnalysisPayload(value: unknown): value is AnalysisResponse {
   return typeof value === 'object' && value !== null && 'analysis' in value;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function simplifyBackendMessage(message: string, providerCode?: string): string {
+  const modelMatch = message.match(/model:\s*([^\n" ]+)/i);
+  const model = modelMatch?.[1];
+
+  if (providerCode === 'RATE_LIMIT' || /quota|rate limit|RESOURCE_EXHAUSTED/i.test(message)) {
+    if (model === 'gemini-2.5-flash') {
+      return 'Google Gemini is rate-limited on gemini-2.5-flash. Redeploy the backend with GEMINI_MODEL=gemini-3.1-flash-lite, then retry.';
+    }
+
+    return `Google Gemini is rate-limited${model ? ` on ${model}` : ''}. Please retry after the quota window resets.`;
+  }
+
+  return message || 'Backend analysis failed.';
+}
+
+async function readBackendError(response: Response): Promise<AnalyzeFailureMessage> {
+  try {
+    const payload = (await response.json()) as unknown;
+    if (isRecord(payload) && isRecord(payload['error'])) {
+      const error = payload['error'] as BackendErrorPayload['error'];
+      const providerCode = typeof error?.code === 'string' ? error.code : undefined;
+      const message = typeof error?.message === 'string' ? error.message : '';
+
+      return {
+        ok: false,
+        code: providerCode === 'RATE_LIMIT' || response.status === 429 ? 'rate_limit' : 'provider',
+        error: simplifyBackendMessage(message, providerCode),
+      };
+    }
+  } catch {
+    // Fall through to the generic status message below.
+  }
+
+  return {
+    ok: false,
+    code: response.status === 429 ? 'rate_limit' : 'network',
+    error: `Backend request failed with HTTP ${response.status}.`,
+  };
 }
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -90,9 +144,15 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse: (
       }
     }
 
-    if (!response || !response.ok) {
-      console.error('[ProPaar] Backend request failed', { status: response?.status });
+    if (!response) {
+      console.error('[ProPaar] Backend request failed before response');
       sendResponse({ ok: false, code: 'network', error: 'Unable to connect to ProPaar Backend.' });
+      return;
+    }
+
+    if (!response.ok) {
+      console.error('[ProPaar] Backend request failed', { status: response.status });
+      sendResponse(await readBackendError(response));
       return;
     }
 

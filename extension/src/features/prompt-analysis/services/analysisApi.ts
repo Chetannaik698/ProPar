@@ -4,9 +4,11 @@ import type { PlatformId } from '../../../platform/adapters/types';
 const API_URL = 'http://localhost:5000/api/v1/analyze';
 const TIMEOUT_MS = 75_000;
 
+type AnalysisErrorCode = 'network' | 'timeout' | 'invalid' | 'unknown' | 'rate_limit' | 'provider';
+
 export class AnalysisError extends Error {
-  code: 'network' | 'timeout' | 'invalid' | 'unknown';
-  constructor(message: string, code: AnalysisError['code'] = 'unknown') {
+  code: AnalysisErrorCode;
+  constructor(message: string, code: AnalysisErrorCode = 'unknown') {
     super(message);
     this.code = code;
   }
@@ -20,11 +22,50 @@ const hasAnalysisPayload = (value: unknown): value is AnalysisResponse => {
   return typeof value === 'object' && value !== null && 'analysis' in value;
 };
 
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+};
+
 interface BackgroundAnalyzeResponse {
   ok: boolean;
   data?: AnalysisResponse;
   error?: string;
-  code?: AnalysisError['code'];
+  code?: AnalysisErrorCode;
+}
+
+function simplifyBackendMessage(message: string, providerCode?: string): string {
+  const modelMatch = message.match(/model:\s*([^\n" ]+)/i);
+  const model = modelMatch?.[1];
+
+  if (providerCode === 'RATE_LIMIT' || /quota|rate limit|RESOURCE_EXHAUSTED/i.test(message)) {
+    if (model === 'gemini-2.5-flash') {
+      return 'Google Gemini is rate-limited on gemini-2.5-flash. Redeploy the backend with GEMINI_MODEL=gemini-3.1-flash-lite, then retry.';
+    }
+
+    return `Google Gemini is rate-limited${model ? ` on ${model}` : ''}. Please retry after the quota window resets.`;
+  }
+
+  return message || 'Backend analysis failed.';
+}
+
+async function readBackendError(response: Response): Promise<AnalysisError> {
+  try {
+    const payload = (await response.json()) as unknown;
+    if (isRecord(payload) && isRecord(payload['error'])) {
+      const error = payload['error'];
+      const providerCode = typeof error['code'] === 'string' ? error['code'] : undefined;
+      const message = typeof error['message'] === 'string' ? error['message'] : '';
+      const code: AnalysisErrorCode = providerCode === 'RATE_LIMIT' || response.status === 429 ? 'rate_limit' : 'provider';
+      return new AnalysisError(simplifyBackendMessage(message, providerCode), code);
+    }
+  } catch {
+    // Fall through to generic status message.
+  }
+
+  return new AnalysisError(
+    `Backend request failed with HTTP ${response.status}.`,
+    response.status === 429 ? 'rate_limit' : 'network',
+  );
 }
 
 function canUseExtensionMessaging(): boolean {
@@ -97,7 +138,7 @@ async function fetchAnalyzeDirect(
 
   if (!res.ok) {
     console.error('[ProPaar] Backend request failed', { status: res.status, statusText: res.statusText });
-    throw new AnalysisError('Unable to connect to ProPaar Backend.', 'network');
+    throw await readBackendError(res);
   }
 
   let json: unknown;
