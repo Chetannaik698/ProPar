@@ -70,7 +70,9 @@ export class AnalysisService {
           ],
         });
 
-        const aiAnalysis = this.parseAndValidate(completion.content);
+        const aiAnalysis = this.parseAndValidate(completion.content, {
+          allowClarification: clarificationAnswers.length === 0,
+        });
         const latencyMs = Date.now() - startedAt;
 
         this.logSuccess(latencyMs, completion.model, completion.usage);
@@ -94,7 +96,10 @@ export class AnalysisService {
     throw this.toServiceError(lastError ?? new Error('Unable to validate AI response'));
   }
 
-  private parseAndValidate(rawContent: string): AiAnalysis {
+  private parseAndValidate(
+    rawContent: string,
+    options: { allowClarification: boolean } = { allowClarification: true }
+  ): AiAnalysis {
     console.info('AI response received for parsing', {
       rawLength: rawContent.length,
       preview: rawContent.slice(0, 240),
@@ -123,7 +128,7 @@ export class AnalysisService {
       );
     }
 
-    const normalized = this.normalizeParsedAnalysis(parsed);
+    const normalized = this.normalizeParsedAnalysis(parsed, options);
     const result = aiAnalysisSchema.safeParse(normalized);
     if (!result.success) {
       const issues = result.error.issues.map((issue) => ({
@@ -160,14 +165,27 @@ export class AnalysisService {
     return result.data;
   }
 
-  private normalizeParsedAnalysis(parsed: unknown): unknown {
-    if (!this.isRecord(parsed) || !Array.isArray(parsed['clarificationQuestions'])) {
+  private normalizeParsedAnalysis(parsed: unknown, options: { allowClarification: boolean }): unknown {
+    if (!this.isRecord(parsed)) {
       return parsed;
     }
 
-    return {
+    const normalized: Record<string, unknown> = {
       ...parsed,
-      clarificationQuestions: parsed['clarificationQuestions'].map((question) => {
+    };
+
+    if (!options.allowClarification && normalized['needsClarification'] === true) {
+      normalized['needsClarification'] = false;
+      normalized['clarificationQuestions'] = [];
+    }
+
+    if (!Array.isArray(normalized['clarificationQuestions'])) {
+      return normalized;
+    }
+
+    return {
+      ...normalized,
+      clarificationQuestions: normalized['clarificationQuestions'].slice(0, 1).map((question) => {
         if (!this.isRecord(question)) return question;
 
         if (question['type'] === 'text') {
@@ -302,7 +320,7 @@ export class AnalysisService {
       'Clarification answers supplied by the user:',
       answers,
       '',
-      'Use these answers to generate the final improved prompt. Do not ask more questions.',
+      'Use these answers to generate the final improved prompt. Do not ask more questions. Set needsClarification to false and clarificationQuestions to an empty array. If any detail is still missing, use a clear placeholder in improvedPrompt.',
     ].join('\n');
   }
 

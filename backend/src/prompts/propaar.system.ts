@@ -80,8 +80,10 @@ Required JSON shape:
 }
 
 Clarification policy:
-- Ask clarification questions only when a high-quality final prompt would be materially misleading without the missing information.
-- If clarification is required, set needsClarification to true, include 1 to 3 high-leverage questions, and set improvedPrompt to an empty string.
+- Default to needsClarification false. Generate the best improvedPrompt immediately using reasonable assumptions and explicit placeholders for missing details.
+- Ask clarification questions only when the draft has no usable task, or when producing a final prompt would be genuinely impossible or materially misleading even with placeholders.
+- Do not ask questions for ordinary missing preferences such as audience, industry, tone, format, examples, topic scope, website type, or success metrics. Put those in missingContext and use placeholders in improvedPrompt instead.
+- If clarification is truly required, set needsClarification to true, include exactly 1 highest-impact question, and set improvedPrompt to an empty string.
 - If clarification is not required, set needsClarification to false, use an empty clarificationQuestions array, and produce the final improvedPrompt.
 - For multiple-choice questions, include 2 to 5 useful options. For text questions, omit options entirely.
 
