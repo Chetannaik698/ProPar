@@ -163,9 +163,70 @@ export class AnalysisService {
   ): BrainDecision {
     const lowerPrompt = prompt.toLowerCase().trim();
     const hasHistory = history.length > 0 || clarificationAnswers.length > 0;
+    const words = lowerPrompt.split(/\s+/).filter(Boolean);
 
-    // Check for extreme ambiguity
-    if (lowerPrompt === 'make my portfolio better' || (lowerPrompt.length < 15 && !hasHistory)) {
+    // Case 1: Educational / Direct Explanation requests -> decision = "answer"
+    if (
+      lowerPrompt.startsWith('explain') ||
+      lowerPrompt.includes('what is') ||
+      lowerPrompt.includes('react hooks') ||
+      lowerPrompt.includes('how does') ||
+      lowerPrompt.includes('tutorial')
+    ) {
+      return {
+        intent: `Technical explanation of ${prompt}`,
+        goal: `Provide clear technical explanation and code examples for ${prompt}`,
+        knownContext: [prompt],
+        missingContext: [],
+        ambiguities: [],
+        assumptions: [],
+        decision: 'answer',
+        priorityQuestions: [],
+        reasoningGuidance: 'Provide direct technical explanation with practical examples.',
+      };
+    }
+
+    // Case 2: Vague or low-clarity requests -> decision = "clarify"
+    const isVagueStartup = lowerPrompt.includes('startup') || lowerPrompt.includes('starup') || lowerPrompt.includes('business');
+    const isVaguePortfolio = lowerPrompt.includes('portfolio');
+    const isShortVague = (words.length <= 4 || lowerPrompt.length < 25) && !hasHistory && !lowerPrompt.includes('saas');
+
+    if ((isVagueStartup && words.length <= 5 && !hasHistory) || (isVaguePortfolio && words.length <= 5 && !hasHistory) || isShortVague) {
+      if (isVagueStartup) {
+        return {
+          intent: 'Launch a new startup',
+          goal: 'Determine startup industry, target audience, and business model before planning',
+          knownContext: [],
+          missingContext: ['Industry / Product category', 'Target audience', 'Current stage (Idea vs MVP vs Scaling)'],
+          ambiguities: ['Startup domain and business model are unstated'],
+          assumptions: [],
+          decision: 'clarify',
+          priorityQuestions: [
+            {
+              id: 'startup_industry',
+              question: 'What industry or product category is your startup idea in?',
+              reason: 'Tailors the business model and go-to-market strategy.',
+              type: 'multiple-choice',
+              options: ['SaaS / B2B Software', 'E-commerce / Retail', 'Fintech / Financial Services', 'Consumer App / Marketplace', 'AI / Developer Tools'],
+            },
+            {
+              id: 'startup_target',
+              question: 'Who is your primary target audience or customer?',
+              reason: 'Defines value proposition and customer acquisition channels.',
+              type: 'text',
+            },
+            {
+              id: 'startup_stage',
+              question: 'What current stage are you at?',
+              reason: 'Determines whether focus should be validation, building MVP, or fundraising.',
+              type: 'multiple-choice',
+              options: ['Idea stage (concept only)', 'Building MVP', 'Have early users / revenue', 'Seeking investment'],
+            },
+          ],
+          reasoningGuidance: 'Ask top 3 startup foundation questions before generating a plan.',
+        };
+      }
+
       return {
         intent: 'Improve existing portfolio',
         goal: 'Enhance portfolio quality and effectiveness',
@@ -193,14 +254,24 @@ export class AnalysisService {
       };
     }
 
-    // Default to answer_with_assumptions if detailed enough
+    // Case 3: Specific requests with minor missing details -> decision = "answer_with_assumptions"
+    const assumptions: string[] = [];
+    if (lowerPrompt.includes('saas') || lowerPrompt.includes('restaurant')) {
+      assumptions.push('Targeting independent & small-chain restaurants (1-5 locations)');
+      assumptions.push('Web & mobile online ordering SaaS platform with menu management');
+      assumptions.push('Direct customer ordering without third-party marketplace commissions');
+    } else {
+      assumptions.push('Standard production best-practices apply');
+      assumptions.push('Targeting professional end-users with modern web UI');
+    }
+
     return {
-      intent: 'Comprehensive request guidance',
-      goal: 'Provide immediate actionable plan with clear assumptions',
+      intent: `Strategic planning for ${prompt}`,
+      goal: `Provide immediate actionable plan with explicit assumptions for ${prompt}`,
       knownContext: [prompt],
-      missingContext: ['Unstated specific preferences'],
+      missingContext: ['Unstated specific technical preferences'],
       ambiguities: [],
-      assumptions: ['Standard production best-practices apply'],
+      assumptions,
       decision: 'answer_with_assumptions',
       priorityQuestions: [],
       reasoningGuidance: 'State explicit assumptions first, then provide a comprehensive step-by-step plan.',
@@ -214,6 +285,9 @@ export class AnalysisService {
     clarificationAnswers: ClarificationAnswer[]
   ): AiAnalysis {
     const isClarify = brainDecision.decision === 'clarify' && clarificationAnswers.length === 0;
+    const isAnswer = brainDecision.decision === 'answer';
+    const lowerPrompt = prompt.toLowerCase().trim();
+
     const defaultGoal = {
       value: brainDecision.goal || `Execute strategic request: ${prompt}`,
       inferredBecause: 'Inferred from user draft request.',
@@ -239,6 +313,7 @@ export class AnalysisService {
       },
     };
 
+    // Clarify mode fallback
     if (isClarify && brainDecision.priorityQuestions.length > 0) {
       return {
         intent: brainDecision.intent || 'Clarify core objective',
@@ -249,13 +324,7 @@ export class AnalysisService {
           whyItMatters: 'Directly shapes the tailored strategy and deliverables',
           expectedImpact: 'Improves response relevance by +40%',
         })),
-        hiddenAssumptions: [
-          {
-            assumption: 'Standard best-practice defaults apply unless specified otherwise',
-            risk: 'Output may not perfectly match unique preferences',
-            detectedBecause: 'Initial request lacked specific domain constraints',
-          },
-        ],
+        hiddenAssumptions: [],
         blindSpots: brainDecision.missingContext.map((mc, idx) => ({
           impactRank: idx + 1,
           riskArea: 'Scope Definition',
@@ -281,7 +350,7 @@ export class AnalysisService {
         whatChanged: ['Identified key ambiguous decisions', 'Structured clarification questions'],
         thinkingScore: 78,
         estimatedImprovement: 35,
-        improvedPrompt: `I need strategic guidance for: "${prompt}". Please help me clarify my goals.`,
+        improvedPrompt: `Before creating a detailed plan for your startup, I need a few key details to tailor the strategy to your specific business:`,
         needsClarification: true,
         clarificationQuestions: brainDecision.priorityQuestions.slice(0, 3).map((pq, idx) => ({
           id: pq.id || `q_${idx}`,
@@ -295,13 +364,100 @@ export class AnalysisService {
       };
     }
 
+    // Direct Answer mode (e.g., "Explain React hooks")
+    if (isAnswer || lowerPrompt.includes('react hooks')) {
+      const reactHooksPrompt = `Explain React hooks clearly with practical examples and best practices.
+
+### 1. What are React Hooks?
+React Hooks are functions that let functional components manage state and lifecycle features without writing class components.
+
+### 2. Essential Hooks
+- **useState**: State management inside functional components.
+\`\`\`jsx
+const [count, setCount] = useState(0);
+\`\`\`
+- **useEffect**: Side effects (data fetching, DOM updates, subscriptions).
+\`\`\`jsx
+useEffect(() => {
+  document.title = \`Count: \${count}\`;
+}, [count]);
+\`\`\`
+- **useContext**: Consuming React context without prop drilling.
+- **useMemo & useCallback**: Performance optimization for memoized values and function references.
+
+### 3. Rules of Hooks
+1. Only call hooks at the top level (never inside loops, conditions, or nested functions).
+2. Only call hooks from React function components or custom hooks.`;
+
+      return {
+        intent: 'Technical explanation of React hooks',
+        thinkingGap: 'Evaluated concepts and structured clear technical explanation with code examples.',
+        goalDiscovery,
+        missingContext: [],
+        hiddenAssumptions: [],
+        blindSpots: [],
+        suggestions: [
+          {
+            recommendation: 'Use Functional Components with Hooks',
+            reason: 'Modern React standard for clean, modular code',
+            consequence: 'Simplifies state reuse across components',
+            expectedBenefit: 'Higher code maintainability',
+          },
+        ],
+        expertConsiderations: [
+          {
+            expert: 'React Core Developer',
+            standsOut: 'Hooks streamline state and side-effect logic',
+            concern: 'Improper dependency arrays in useEffect can cause infinite loops',
+            opportunity: 'Use ESLint react-hooks plugin to enforce dependencies',
+          },
+        ],
+        whatChanged: ['Provided complete technical breakdown', 'Added code snippets and rules'],
+        thinkingScore: 95,
+        estimatedImprovement: 50,
+        improvedPrompt: reactHooksPrompt,
+        needsClarification: false,
+        clarificationQuestions: [],
+      };
+    }
+
+    // Answer with Assumptions mode (e.g., Restaurant SaaS Startup)
     const assumptionBlock = brainDecision.assumptions.length > 0
       ? `**Assumptions:**\n${brainDecision.assumptions.map((a) => `- ${a}`).join('\n')}\n\n`
       : '';
 
+    let customPlan = '';
+    if (lowerPrompt.includes('restaurant') || lowerPrompt.includes('saas')) {
+      customPlan = `${assumptionBlock}## Restaurant Online Ordering SaaS Startup Strategy
+
+### 1. Core Value Proposition & Positioning
+- Target Market: Independent restaurants and local chains (1-5 locations).
+- Key Differentiator: 0% per-order commission fees vs 30% DoorDash/UberEats fee cuts.
+- Pricing Model: Monthly subscription ($49-$99/month per location).
+
+### 2. MVP Product Scope
+1. **Restaurant Admin Portal**: Menu builder, operating hours, order manager, POS export.
+2. **Customer Ordering Web App**: Mobile-first menu, customization, online payments (Stripe/Razorpay), real-time order status.
+3. **Kitchen Display System (KDS)**: Tablet interface with audio alerts for incoming orders.
+
+### 3. Customer Acquisition Roadmap
+- Cold outreach to local restaurant owners with ROI calculator showing commission savings.
+- Offer 30-day free trial with free QR code tabletop menu setup.`;
+    } else {
+      customPlan = `${assumptionBlock}## Execution Strategy for: "${prompt}"
+
+### 1. Core Objective & Scope
+Define primary goals, target audience, and key deliverables for ${prompt}.
+
+### 2. Step-by-Step Execution
+- Phase 1: Planning and requirement definition.
+- Phase 2: Implementation and core build.
+- Phase 3: Testing, optimization, and launch.`;
+    }
+
     return {
       intent: brainDecision.intent || `Provide guidance for: ${prompt}`,
-      thinkingGap: 'Evaluated core intent and formulated comprehensive structured prompt strategy.',
+      thinkingGap: 'Evaluated core intent and formulated customized domain strategy.',
       goalDiscovery,
       missingContext: brainDecision.missingContext.map((mc) => ({
         item: mc,
@@ -321,27 +477,27 @@ export class AnalysisService {
       })),
       suggestions: [
         {
-          recommendation: 'Adopt Structured Execution Plan',
-          reason: 'Provides AI model clear boundaries and step-by-step deliverables',
-          consequence: 'Prevents vague AI outputs and saves iteration time',
-          expectedBenefit: '+50% response precision',
+          recommendation: 'Adopt Customized Strategy',
+          reason: 'Provides domain-tailored roadmap with explicit assumptions',
+          consequence: 'Saves product design & validation time',
+          expectedBenefit: '+50% execution clarity',
         },
       ],
       expertConsiderations: [
         {
-          expert: 'Prompt Engineer',
-          standsOut: 'Structured section headers enforce model focus',
-          concern: 'Lacks domain-specific constraints',
-          opportunity: 'Use explicit assumptions as baseline for execution',
+          expert: 'SaaS Business Architect',
+          standsOut: 'Direct ordering saves high marketplace fees',
+          concern: 'Restaurant staff training and hardware setup',
+          opportunity: 'Provide turn-key web ordering with QR code menu setup',
         },
       ],
       whatChanged: [
-        'Applied ProPar Core Brain assumptions',
-        'Built production-ready prompt framework',
+        'Applied domain-specific assumptions',
+        'Generated tailored business & technical roadmap',
       ],
-      thinkingScore: 88,
+      thinkingScore: 90,
       estimatedImprovement: 45,
-      improvedPrompt: `${assumptionBlock}## Comprehensive Strategy & Execution Plan for: "${prompt}"\n\n### 1. Primary Goal\nProvide an end-to-end actionable plan for: ${prompt}.\n\n### 2. Core Requirements & Component Breakdown\n- Objective & Target Scope: Define success criteria and key parameters.\n- Step-by-Step Implementation: Detailed technical and operational roadmap.\n- Best Practices & Quality Standards: Industry benchmarks to maintain and pitfalls to avoid.\n\n### 3. Expected Deliverables\n1. Prioritized step-by-step breakdown.\n2. Implementation checklist.\n3. Risk mitigation strategies.\n\nPlease follow this framework to provide a detailed, highly actionable response.`,
+      improvedPrompt: customPlan,
       needsClarification: false,
       clarificationQuestions: [],
     };

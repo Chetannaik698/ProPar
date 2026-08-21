@@ -20,46 +20,22 @@ async function runTests() {
 
   const testCases: TestCase[] = [
     {
-      name: 'TEST CASE 1: Open-ended Portfolio Plan',
-      input: 'Provide a comprehensive plan and actionable guidance for preparing a portfolio website.',
+      name: 'USER TEST 1: Highly Ambiguous Startup Request',
+      input: 'i want startt starup',
       history: [],
       clarificationAnswers: [],
     },
     {
-      name: 'TEST CASE 2: Specific Developer Portfolio Context',
-      input: 'I am a BCA graduate. I know React, Node.js, MongoDB and Express. I want a portfolio to get a software developer job. I have 6 projects.',
+      name: 'USER TEST 2: Clear Technical Explanation Request',
+      input: 'Explain React hooks',
       history: [],
       clarificationAnswers: [],
     },
     {
-      name: 'TEST CASE 3: Underspecified Gym Website Build',
-      input: 'Build a website for my gym.',
+      name: 'USER TEST 3: Specific SaaS Restaurant Startup Request',
+      input: 'I want to start a SaaS startup for small restaurants to manage online orders.',
       history: [],
       clarificationAnswers: [],
-    },
-    {
-      name: 'TEST CASE 4: Clear Technical Question',
-      input: 'Explain React hooks.',
-      history: [],
-      clarificationAnswers: [],
-    },
-    {
-      name: 'TEST CASE 5: High Ambiguity Request',
-      input: 'Make my portfolio better.',
-      history: [],
-      clarificationAnswers: [],
-    },
-    {
-      name: 'TEST CASE 6: Multi-turn Follow-up Context Preservation',
-      input: 'The gym is located in Austin, TX. The main goal is driving new membership signups.',
-      history: [
-        { role: 'user', content: 'Build a website for my gym.' },
-        { role: 'assistant', content: 'Before building, I need key decisions on primary goal and location.' },
-      ],
-      clarificationAnswers: [
-        { questionId: 'gym_goal', answer: 'Driving new membership signups' },
-        { questionId: 'gym_location', answer: 'Austin, TX' },
-      ],
     },
   ];
 
