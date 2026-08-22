@@ -1,7 +1,7 @@
 import type { AnalysisResponse, ClarificationAnswer, HistoryItem } from '../types/analysis';
 import type { PlatformId } from '../../../platform/adapters/types';
 
-const API_URL = 'http://localhost:5000/api/v1/analyze';
+const API_URL = import.meta.env.VITE_API_URL || 'https://propar-backend.onrender.com/api/v1/analyze';
 const TIMEOUT_MS = 75_000;
 
 type AnalysisErrorCode = 'network' | 'timeout' | 'invalid' | 'unknown' | 'rate_limit' | 'provider';

@@ -30,8 +30,8 @@
     "service_worker": "background.js",
     "type": "module"
   },
+  "permissions": [],
   "host_permissions": [
-    "http://localhost:5000/*",
     "https://propar-backend.onrender.com/*"
   ],
   "content_scripts": [
