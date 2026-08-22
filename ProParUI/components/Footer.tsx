@@ -14,7 +14,7 @@ const COLUMNS = [
     title: "Company",
     links: [
       { label: "About", href: "#" },
-      { label: "Privacy", href: "#privacy" },
+      { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms", href: "#" },
     ],
   },
@@ -23,7 +23,7 @@ const COLUMNS = [
     links: [
       { label: "Twitter / X", href: "#" },
       { label: "GitHub", href: "#" },
-      { label: "Contact", href: "#" },
+      { label: "Contact", href: "mailto:hello@propaar.app" },
     ],
   },
 ];
